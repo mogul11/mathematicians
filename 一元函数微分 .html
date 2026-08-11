@@ -1,0 +1,2847 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>L2知识点：一元函数的微分</title>
+
+  <!-- MathJax：用于渲染数学公式 -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$']],
+        displayMath: [['$$', '$$']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+  <style>
+    :root {
+      --bg: #f5f8ff;
+      --panel: #ffffff;
+      --panel-soft: #f8fbff;
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --primary-soft: #eaf2ff;
+      --accent: #14b8a6;
+      --accent-soft: #e6fffb;
+      --purple: #8b5cf6;
+      --orange: #f59e0b;
+      --danger: #ef4444;
+      --text: #1f2937;
+      --muted: #64748b;
+      --border: #dbeafe;
+      --border-strong: #bfdbfe;
+      --shadow: 0 12px 32px rgba(30, 64, 175, 0.08);
+      --radius: 18px;
+      --sidebar-left: 300px;
+      --sidebar-right: 290px;
+      --header-height: 64px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "PingFang SC",
+        "Hiragino Sans GB",
+        "Microsoft YaHei",
+        Arial,
+        sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(59, 130, 246, 0.13), transparent 34%),
+        radial-gradient(circle at top right, rgba(20, 184, 166, 0.12), transparent 32%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      color: #172554;
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: grid;
+      place-items: center;
+      color: white;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.25);
+    }
+
+    .top-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-left) minmax(0, 1fr) var(--sidebar-right);
+      gap: 20px;
+      padding: 20px;
+      max-width: 1720px;
+      margin: 0 auto;
+    }
+
+    .left-sidebar,
+    .right-sidebar {
+      position: sticky;
+      top: calc(var(--header-height) + 20px);
+      height: calc(100vh - var(--header-height) - 40px);
+      overflow: auto;
+      align-self: start;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 15px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(180deg, #ffffff, #f8fbff);
+    }
+
+    .panel-header h2,
+    .panel-header h3 {
+      margin: 0;
+      font-size: 16px;
+      color: #172554;
+    }
+
+    .panel-body {
+      padding: 14px 16px 18px;
+    }
+
+    .main {
+      min-width: 0;
+    }
+
+    .hero {
+      background:
+        linear-gradient(135deg, rgba(59, 130, 246, 0.10), rgba(20, 184, 166, 0.08)),
+        #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 30px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      position: absolute;
+      right: 24px;
+      bottom: -18px;
+      font-size: 62px;
+      font-weight: 900;
+      color: rgba(59, 130, 246, 0.08);
+      pointer-events: none;
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      color: #0f172a;
+      font-size: 34px;
+      line-height: 1.25;
+    }
+
+    .hero p {
+      margin: 0;
+      color: #475569;
+      max-width: 880px;
+    }
+
+    .hero-tags {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .section {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 28px;
+      margin-bottom: 20px;
+      scroll-margin-top: 92px;
+    }
+
+    .section h2 {
+      margin: 0 0 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      color: #172554;
+      font-size: 25px;
+    }
+
+    .section h3 {
+      margin: 26px 0 10px;
+      color: #1d4ed8;
+      font-size: 20px;
+      scroll-margin-top: 92px;
+    }
+
+    .section h4 {
+      margin: 18px 0 8px;
+      color: #0f766e;
+      font-size: 17px;
+    }
+
+    .lead {
+      color: #475569;
+      background: var(--panel-soft);
+      border-left: 4px solid var(--primary);
+      padding: 14px 16px;
+      border-radius: 12px;
+    }
+
+    .note {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-left: 4px solid var(--orange);
+      padding: 14px 16px;
+      border-radius: 12px;
+      color: #7c2d12;
+      margin: 14px 0;
+    }
+
+    .keybox {
+      background: var(--accent-soft);
+      border: 1px solid #99f6e4;
+      border-left: 4px solid var(--accent);
+      padding: 14px 16px;
+      border-radius: 12px;
+      color: #134e4a;
+      margin: 14px 0;
+    }
+
+    .cite {
+      background: #f7f8fa;
+      border: none;
+      border-left: 3px solid #3370ff;
+      padding: 10px 16px;
+      border-radius: 0 6px 6px 0;
+      color: #646a73;
+      margin: 14px 0;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    .cite p {
+      margin: 4px 0;
+    }
+
+    .formula-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 16px;
+      margin: 14px 0;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      background: #ffffff;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    th,
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--primary-soft);
+      color: #1e3a8a;
+      text-align: left;
+      font-weight: 800;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .toc-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .toc-list li {
+      margin: 4px 0;
+    }
+
+    .toc-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 9px;
+      border-radius: 10px;
+      color: #334155;
+      font-size: 14px;
+      transition: 0.18s ease;
+    }
+
+    .toc-link:hover {
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      transform: translateX(2px);
+    }
+
+    .toc-link.active {
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-weight: 800;
+    }
+
+    details.toc-group {
+      border-radius: 12px;
+      margin-bottom: 6px;
+    }
+
+    details.toc-group summary {
+      cursor: pointer;
+      user-select: none;
+      padding: 8px 9px;
+      border-radius: 10px;
+      font-weight: 800;
+      color: #172554;
+      background: #f8fbff;
+      list-style: none;
+    }
+
+    details.toc-group summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details.toc-group summary::before {
+      content: "▸";
+      display: inline-block;
+      margin-right: 7px;
+      transition: 0.2s ease;
+      color: var(--primary);
+    }
+
+    details.toc-group[open] summary::before {
+      transform: rotate(90deg);
+    }
+
+    details.toc-group ul {
+      padding-left: 12px;
+      margin: 5px 0 10px;
+      border-left: 2px solid var(--border);
+    }
+
+    /* 知识路径图 */
+    #knowledge-tree {
+      --menu-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+    .kpath-wrap {
+      position: relative;
+      width: 100%;
+      height: 420px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #181820;
+      transition: none;
+    }
+    /* 全屏展开态 */
+    .kpath-wrap.kpath-expanded {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw !important;
+      height: 100vh !important;
+      border-radius: 0;
+      z-index: 2000;
+    }
+    /* Expand 按钮 */
+    #kpExpandBtn {
+      position: absolute;
+      top: 12px; right: 12px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px 5px 8px;
+      background: rgba(40,40,60,0.85);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 7px;
+      color: #ccc;
+      font-size: 12px;
+      cursor: pointer;
+      z-index: 10;
+      transition: background 0.15s, color 0.15s;
+      user-select: none;
+    }
+    #kpExpandBtn:hover { background: rgba(80,80,120,0.95); color: #fff; }
+    #kpExpandBtn svg { flex-shrink: 0; }
+    #kpathCanvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+    }
+    #kpathLegend {
+      position: absolute;
+      top: 14px; left: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      pointer-events: none;
+    }
+    .kp-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: #aaa;
+    }
+    .kp-legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    #kpathTooltip {
+      position: fixed;
+      background: rgba(20,20,32,0.96);
+      border: 1px solid #555;
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #ddd;
+      font-size: 13px;
+      line-height: 1.7;
+      max-width: 220px;
+      display: none;
+      pointer-events: none;
+      z-index: 1010;
+    }
+    #kpathTooltip .kp-tt-title { font-size:15px; font-weight:bold; color:#fff; margin-bottom:4px; }
+    #kpathTooltip .kp-tt-type  { font-size:11px; margin-bottom:6px; }
+    #kpathHint {
+      position: absolute;
+      bottom: 10px; left: 50%;
+      transform: translateX(-50%);
+      color: #555;
+      font-size: 12px;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    #nodeMenu {
+      position: fixed;
+      z-index: 1020;
+      min-width: 138px;
+      background: #fff;
+      border: 1px solid #e6e8ef;
+      border-radius: 10px;
+      box-shadow: var(--menu-shadow);
+      display: none;
+      overflow: hidden;
+    }
+    #nodeMenu .item {
+      padding: 10px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      border-bottom: 1px solid #f2f4f8;
+      background: #fff;
+    }
+    #nodeMenu .item:last-child { border-bottom: 0; }
+    #nodeMenu .item:hover { background: #f7faff; }
+
+    .side-card {
+      padding: 14px;
+      border-radius: 15px;
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+
+    .side-card h4 {
+      margin: 0 0 8px;
+      color: #172554;
+    }
+
+    .side-card ul {
+      padding-left: 18px;
+      margin: 0;
+      color: #475569;
+      font-size: 14px;
+    }
+
+    .side-card p {
+      font-size: 14px;
+      color: #475569;
+      margin: 0;
+    }
+
+    .interactive {
+      border: 1px solid var(--border-strong);
+      background: linear-gradient(180deg, #ffffff, #f8fbff);
+      border-radius: 22px;
+      padding: 18px;
+      margin: 18px 0;
+    }
+
+    .interactive-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.6fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .canvas-wrap {
+      background: #f5f8ff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #diffCanvas {
+      width: 100%;
+      height: 420px;
+      display: block;
+    }
+
+    .control-panel {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .cp-section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #64748b;
+      margin: 0 0 8px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .func-select {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #fff;
+      color: #1f2937;
+      cursor: pointer;
+      appearance: auto;
+    }
+
+    .func-select:focus { outline: 2px solid var(--primary); }
+
+    .slider-section {}
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+
+    .slider-header .s-label {
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .slider-header .s-val {
+      font-size: 18px;
+      font-weight: 800;
+      color: #1f2937;
+      font-variant-numeric: tabular-nums;
+      min-width: 52px;
+      text-align: right;
+    }
+
+    .slider-header .s-sym {
+      font-size: 15px;
+      color: #475569;
+      margin: 0 6px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: #6366f1;
+      height: 6px;
+      cursor: pointer;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .metric {
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+    }
+
+    .metric .label {
+      display: block;
+      color: #64748b;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    .metric .value {
+      display: block;
+      color: #1f2937;
+      font-weight: 900;
+      font-size: 18px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 14px 0;
+    }
+
+    .compare-card {
+      border-radius: 16px;
+      padding: 15px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+    }
+
+    .compare-card h4 {
+      margin: 0 0 8px;
+    }
+
+    .exercise-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .exercise-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 8px 18px rgba(30, 64, 175, 0.05);
+    }
+
+    .exercise-card h4 {
+      margin-top: 0;
+      color: #172554;
+    }
+
+    .exercise-card details {
+      margin-top: 10px;
+      background: #f8fbff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+
+    .exercise-card summary {
+      cursor: pointer;
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+
+    .footer-note {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 24px;
+    }
+
+    @media (max-width: 1280px) {
+      .layout {
+        grid-template-columns: 260px minmax(0, 1fr);
+      }
+
+      .right-sidebar {
+        display: none;
+      }
+    }
+
+    @media (max-width: 920px) {
+      .topbar {
+        padding: 0 16px;
+      }
+
+      .top-meta {
+        display: none;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+        padding: 14px;
+      }
+
+      .left-sidebar {
+        position: static;
+        height: auto;
+      }
+
+      .interactive-grid,
+      .comparison,
+      .exercise-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        font-size: 27px;
+      }
+
+      .section {
+        padding: 20px;
+      }
+
+      .tree-wrap {
+        overflow-x: auto;
+        min-height: 480px;
+      }
+    }
+
+
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon">微</div>
+      <div>
+        <div>一元函数的微分</div>
+        <div style="font-size:12px;color:#64748b;font-weight:600;">
+          高等数学(上) · 一元函数微积分 · 微分与导数
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- 左侧边栏：仅保留页面导航 -->
+    <aside class="left-sidebar">
+      <section class="panel">
+        <div class="panel-header">
+          <h2>页面导航</h2>
+        </div>
+
+        <div class="panel-body">
+          <nav id="toc">
+              <ul class="toc-list">
+                <li><a class="toc-link" href="#knowledge-tree">知识树</a></li>
+              </ul>
+            </details>
+
+            <details class="toc-group" open>
+              <summary>内容大纲</summary>
+              <ul class="toc-list">
+                <li>
+                  <a class="toc-link" href="#section-1" style="font-weight:700;">1. 定义</a>
+                  <ul class="toc-list" style="padding-left:14px;margin:2px 0 4px;">
+                    <li><a class="toc-link" href="#section-1-1">1.1 微分的概念</a></li>
+                    <li><a class="toc-link" href="#section-1-2">1.2 微分的几何意义</a></li>
+                    <li><a class="toc-link" href="#section-1-3">1.3 微分与导数的关系</a></li>
+                  </ul>
+                </li>
+                <li>
+                  <a class="toc-link" href="#section-2" style="font-weight:700;">2. 微分运算</a>
+                  <ul class="toc-list" style="padding-left:14px;margin:2px 0 4px;">
+                    <li><a class="toc-link" href="#section-2-1">2.1 基本初等函数微分公式</a></li>
+                    <li><a class="toc-link" href="#section-2-2">2.2 微分运算法则</a></li>
+                    <li><a class="toc-link" href="#section-2-3">2.3 一阶微分的形式不变性</a></li>
+                  </ul>
+                </li>
+                <li>
+                  <a class="toc-link" href="#section-3" style="font-weight:700;">3. 微分学中值定理</a>
+                  <ul class="toc-list" style="padding-left:14px;margin:2px 0 4px;">
+                    <li><a class="toc-link" href="#section-3-1">3.1 局部极值与Fermat(费马)定理</a></li>
+                    <li><a class="toc-link" href="#section-3-2">3.2 Rolle 定理</a></li>
+                    <li><a class="toc-link" href="#section-3-3">3.3 拉格朗日中值定理</a></li>
+                    <li><a class="toc-link" href="#section-3-4">3.4 Cauchy(柯西)中值定理</a></li>
+                  </ul>
+                </li>
+                <li>
+                  <a class="toc-link" href="#section-4" style="font-weight:700;">4. 微分应用</a>
+                  <ul class="toc-list" style="padding-left:14px;margin:2px 0 4px;">
+                    <li><a class="toc-link" href="#section-4-1">4.1 近似计算</a></li>
+                    <li><a class="toc-link" href="#section-4-2">4.2 误差估计</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </details>
+
+            <details class="toc-group" open>
+              <summary>练习</summary>
+              <ul class="toc-list">
+                <li><a class="toc-link" href="#exercise-basic">计算题</a></li>
+                <li><a class="toc-link" href="#exercise-advanced">证明题</a></li>
+              </ul>
+            </details>
+          </nav>
+        </div>
+      </section>
+    </aside>
+
+    <!-- 中间正文：包含知识树、正文、练习与答案 -->
+    <main class="main">
+      <section class="hero">
+        <h1>知识点：一元函数的微分</h1>
+        <p>
+          微分是导数概念的自然延伸。导数描述函数在某一点的“瞬时变化率”，而微分把这种变化率转化为对函数改变量的线性近似工具。
+          学好微分，能帮助你理解近似计算、误差估计、中值定理以及后续泰勒展开。
+        </p>
+
+        <div class="hero-tags">
+          <span class="pill">核心公式：$$dy=f'(x)dx$$</span>
+          <span class="pill">关键词：线性近似</span>
+          <span class="pill">核心思想：局部线性化、无穷分割</span>
+        </div>
+      </section>
+
+      <!-- 知识树正文模块 -->
+      <section class="section" id="knowledge-tree">
+        <h2>知识树</h2>
+
+        <p class="lead">
+          本知识点处在“一元微积分”中“导数与微分”模块的核心位置。它承接函数、极限、连续、导数定义与求导法则，
+          并向后支撑中值定理、近似计算、误差估计、泰勒展开和微分方程等内容。
+        </p>
+
+        <div class="kpath-wrap" id="kpathWrap">
+          <canvas id="kpathCanvas"></canvas>
+          <!-- Expand 按钮 -->
+          <button id="kpExpandBtn" title="展开全屏">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8">
+              <polyline points="9,1 13,1 13,5"/>
+              <line x1="7.5" y1="6.5" x2="13" y2="1"/>
+              <polyline points="5,13 1,13 1,9"/>
+              <line x1="6.5" y1="7.5" x2="1" y2="13"/>
+            </svg>
+            Expand
+          </button>
+          <div id="kpathLegend">
+            <div class="kp-legend-item"><div class="kp-legend-dot" style="background:#a78bfa;"></div>核心知识点</div>
+            <div class="kp-legend-item"><div class="kp-legend-dot" style="background:#60a5fa;"></div>前置依赖</div>
+            <div class="kp-legend-item"><div class="kp-legend-dot" style="background:#34d399;"></div>后续应用</div>
+            <div class="kp-legend-item"><div class="kp-legend-dot" style="background:#94a3b8;"></div>相关知识</div>
+          </div>
+          <div id="kpathHint">悬停查看详情 · 拖拽移动节点 · 点击节点可进入词条</div>
+        </div>
+        <div id="kpathTooltip">
+          <div class="kp-tt-title" id="kp-tt-name"></div>
+          <div class="kp-tt-type" id="kp-tt-type"></div>
+          <div id="kp-tt-desc"></div>
+        </div>
+
+        <!-- 节点操作菜单 -->
+        <div id="nodeMenu">
+          <div class="item" id="goEntry">进入词条</div>
+        </div>
+      </section>
+
+      <!-- 1 定义 -->
+      <section class="section" id="section-1">
+        <h2>1. 定义</h2>
+
+        <p class="lead">
+          本节从“函数改变量”出发，建立微分的概念。直观地说，微分就是用切线的变化量去近似曲线的真实变化量。
+          当自变量变化很小时，这种近似非常有效。
+        </p>
+
+        <h3 id="section-1-1">1.1 微分的概念</h3>
+
+        <p>
+          <strong>定义</strong>  设函数$y=f(x)$ 定义于$x$点的某个邻域，如果存在与 $\Delta x$ 无关的数 $A$ ，使得
+        </p>
+
+        <div class="formula-card">
+          $$f(x+\Delta x)-f(x)=A \Delta x+o(\Delta x)$$
+        </div>
+
+        <p>
+          则称函数$f$ 在 $x$ 点可微，称 $A \Delta x$ 为因变量 $y=f(x)$ 在 $x$ 点对应于自变量增量 $\Delta x$ 的微分，记作 $dy$ 或 $df(x)$ ．
+        </p>
+
+        <p>
+          其中 $o(\Delta x)$ 表示比 $\Delta x$ 更高阶的小量。当 $\Delta x\to0$ 时，它相对于 $\Delta x$ 可以忽略。
+          因此，函数改变量的主要线性部分为：
+        </p>
+
+        <div class="formula-card">
+          $$dy=f'(x)\Delta x$$
+        </div>
+
+        <div class="cite">
+          <strong>注：</strong>
+          <p>(1) 定义中所说的 $A$ 是常数, 是指它相对于 $\Delta x$ 而言是常数, 不依赖于 $\Delta x$ 的改变而改变. 显然, $A$ 的值是依赖于 $x_0$ 点的, 即 $A = A(x_0)$, 当不刻意强调 $x_0$ 时, 常写为 $A = A(x)$</p>
+          <p>(2) 考虑到取特殊函数 $y = f(x) = x$ 时, 显然有 $\Delta y = \Delta x$, 所以又有 $dx = \Delta x$. 因此在微分记号中, 常约定把 $\Delta x$ 记成 $dx$, 而把一个可微函数的微分记为 $dy = Adx$.</p>
+        </div>
+
+        <p>
+          于是得到一元函数微分的标准形式：
+        </p>
+
+        <div class="formula-card">
+          $$dy=f'(x)dx$$
+        </div>
+
+        <div class="keybox">
+          <strong>理解要点：</strong>
+          微分 $dy$ 不是函数真实改变量 $\Delta y$，而是它的线性近似部分。
+          在非常小的变化范围内，曲线可以被切线近似，这正是微分的核心思想。
+        </div>
+
+        <!-- 连续、可微、可导关系图 -->
+        <div style="margin:28px 0 8px;">
+          <p style="font-weight:600;font-size:15px;color:#1f2937;margin-bottom:14px;">连续、可导、可微的关系</p>
+
+          <!-- 流程关系图 -->
+          <div style="display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap;">
+
+            <!-- 左： SVG 流程图 -->
+            <div style="flex:0 0 auto;">
+              <svg viewBox="0 0 220 320" width="180" style="display:block;">
+                <defs>
+                  <!-- 蓝色实线箭头 -->
+                  <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L8,3 z" fill="#3b82f6"/>
+                  </marker>
+                  <!-- 红色叉号用的跨过箭头 -->
+                  <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L8,3 z" fill="#ef4444"/>
+                  </marker>
+                </defs>
+
+                <!-- 一元函数 标题框 -->
+                <rect x="55" y="8" width="110" height="34" rx="5" fill="white" stroke="#374151" stroke-width="1.5"/>
+                <text x="110" y="30" text-anchor="middle" font-size="14" font-family="Microsoft YaHei,Arial" font-weight="700" fill="#111827">一元函数</text>
+
+                <!-- 可微框 -->
+                <rect x="18" y="88" width="72" height="36" rx="5" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5"/>
+                <text x="54" y="111" text-anchor="middle" font-size="14" font-family="Microsoft YaHei,Arial" font-weight="700" fill="#92400e">可微</text>
+
+                <!-- 可导框 -->
+                <rect x="130" y="88" width="72" height="36" rx="5" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5"/>
+                <text x="166" y="111" text-anchor="middle" font-size="14" font-family="Microsoft YaHei,Arial" font-weight="700" fill="#92400e">可导</text>
+
+                <!-- 连续框 -->
+                <rect x="74" y="186" width="72" height="36" rx="5" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+                <text x="110" y="209" text-anchor="middle" font-size="14" font-family="Microsoft YaHei,Arial" font-weight="700" fill="#166534">连续</text>
+
+                <!-- 有极限框 -->
+                <rect x="74" y="270" width="72" height="36" rx="5" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+                <text x="110" y="293" text-anchor="middle" font-size="14" font-family="Microsoft YaHei,Arial" font-weight="700" fill="#1e40af">有极限</text>
+
+                <!-- 一元函数 → 可微 -->
+                <line x1="90" y1="42" x2="60" y2="88" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arr)"/>
+                <!-- 一元函数 → 可导 -->
+                <line x1="130" y1="42" x2="160" y2="88" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arr)"/>
+
+                <!-- 可微 ⇔ 可导 双向箭头 -->
+                <line x1="90" y1="106" x2="130" y2="106" stroke="#3b82f6" stroke-width="1.8" marker-end="url(#arr)"/>
+                <line x1="130" y1="112" x2="90" y2="112" stroke="#3b82f6" stroke-width="1.8" marker-end="url(#arr)"/>
+
+                <!-- 可微 → 连续 -->
+                <line x1="54" y1="124" x2="96" y2="186" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arr)"/>
+                <!-- 可导 → 连续 -->
+                <line x1="166" y1="124" x2="124" y2="186" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arr)"/>
+
+                <!-- 连续 → 可微 反向用红色虚线+✕ -->
+                <line x1="86" y1="186" x2="50" y2="124" stroke="#ef4444" stroke-width="1.4" stroke-dasharray="4,3" marker-end="url(#arrR)"/>
+                <text x="55" y="162" font-size="14" fill="#ef4444" font-family="Arial">&#x2715;</text>
+
+                <!-- 连续 → 可导 反向用红色虚线+✕ -->
+                <line x1="134" y1="186" x2="170" y2="124" stroke="#ef4444" stroke-width="1.4" stroke-dasharray="4,3" marker-end="url(#arrR)"/>
+                <text x="153" y="162" font-size="14" fill="#ef4444" font-family="Arial">&#x2715;</text>
+
+                <!-- 连续 → 有极限 -->
+                <line x1="110" y1="222" x2="110" y2="270" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arr)"/>
+              </svg>
+              <p style="font-size:11px;color:#9ca3af;text-align:center;margin-top:2px;">✕ 表示反向不成立</p>
+            </div>
+
+            <!-- 右：文字关系说明 -->
+            <div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:10px;margin-top:4px;">
+
+              <div style="background:#f7f8fa;border-left:3px solid #f97316;border-radius:0 6px 6px 0;padding:8px 12px;">
+                <span style="font-weight:700;color:#ea580c;font-size:13px;">可导 ⇒ 可微</span>
+                <p style="margin:3px 0 0;font-size:13px;color:#374151;">$f'(x_0)$ 存在 ⇒ $f(x_0)$ 可微，且 $dy = f'(x_0)\,dx$</p>
+              </div>
+
+              <div style="background:#f7f8fa;border-left:3px solid #10b981;border-radius:0 6px 6px 0;padding:8px 12px;">
+                <span style="font-weight:700;color:#059669;font-size:13px;">可微 ⇔ 可导（一元）</span>
+                <p style="margin:3px 0 0;font-size:13px;color:#374151;">一元函数可微与可导完全等价</p>
+              </div>
+
+              <div style="background:#f7f8fa;border-left:3px solid #3b82f6;border-radius:0 6px 6px 0;padding:8px 12px;">
+                <span style="font-weight:700;color:#3b82f6;font-size:13px;">可微 ⇒ 连续</span>
+                <p style="margin:3px 0 0;font-size:13px;color:#374151;">可微必连续；连续不一定可微（如 $|x|$ 在 $x=0$ 处）</p>
+              </div>
+
+              <div style="background:#f7f8fa;border-left:3px solid #a855f7;border-radius:0 6px 6px 0;padding:8px 12px;">
+                <span style="font-weight:700;color:#9333ea;font-size:13px;">反例</span>
+                <p style="margin:3px 0 0;font-size:13px;color:#374151;">函数$f(x)=|x|$在$x=0$ 处连续但不可导（不可微）</p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <h3 id="section-1-2">1.2 微分的几何意义</h3>
+
+        <p>
+          设$P_0(x_0,y_0)$是曲线$y=f(x)$上的一点,当自变量有微小增量$\Delta x$时,得到曲线上另一点$P(x_0+\Delta x,y_0+\Delta y)$,过$P_0$作切线$P_0T$,从图中可见
+        </p>
+
+        <div class="formula-card">
+          $$\Delta y=QP$$
+          $$dy=f'(x_0)\Delta x=QM$$
+        </div>
+
+        <p>
+          这就是说，相应于$\Delta y$作为曲线$y=f(x)$上点的纵坐标的增量，$dy$就是曲线的切线上点的纵坐标的对应增量.在$\Delta x\to 0$的过程中，$MP=|\Delta y-dy|$是比$\Delta x$高阶的无穷小量，因此，在点$P_0$附近我们可以用切线段近似地代替原有的曲线段.
+        </p>
+
+        <figure style="margin:24px 0;text-align:center;">
+          <svg viewBox="0 0 380 250" width="100%" style="max-width:500px;display:inline-block;">
+            <defs>
+              <marker id="gax" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L7,3z" fill="#374151"/>
+              </marker>
+              <marker id="gay" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L7,3z" fill="#374151"/>
+              </marker>
+            </defs>
+
+            <!-- 坐标轴 -->
+            <line x1="24" y1="215" x2="355" y2="215" stroke="#374151" stroke-width="1.4" marker-end="url(#gax)"/>
+            <line x1="32" y1="224" x2="32" y2="12" stroke="#374151" stroke-width="1.4" marker-end="url(#gay)"/>
+            <text x="18" y="227" font-size="11" fill="#374151" font-family="serif">O</text>
+            <text x="348" y="227" font-size="11" fill="#374151" font-family="serif">x</text>
+            <text x="24" y="12" font-size="11" fill="#374151" font-family="serif">y</text>
+
+            <!--
+              关键点：
+              P₀=(120,166) 曲线上
+              P=(240,84)   曲线上
+              Q=(240,166)  P₀水平线与 x=240 交点
+              T=(240,106)  切线在x=240处: y=166-0.50*(240-120)=106
+              切线过P₀(120,166) k_svg=-0.50
+            -->
+
+            <!-- 凸形递增曲线 -->
+            <path d="M 46,194 C 70,191 95,181 120,166 C 152,148 185,122 220,98 C 232,89 237,85 240,84 C 258,72 284,52 308,28"
+                  fill="none" stroke="#2563eb" stroke-width="2"/>
+            <text x="294" y="26" font-size="11" fill="#374151" font-family="serif">y=f(x)</text>
+
+            <!-- 切线 ℓ：过P₀(120,166) k_svg=-0.50 -->
+            <!-- 左延: x=26, y=166+0.50*(120-26)=213; 右延: x=310, y=166-0.50*(310-120)=71 -->
+            <line x1="26" y1="213" x2="310" y2="71" stroke="#374151" stroke-width="1.2"/>
+            <text x="312" y="70" font-size="12" fill="#374151" font-family="serif">ℓ</text>
+
+            <!-- 垂直虚线 x=120 -->
+            <line x1="120" y1="166" x2="120" y2="215" stroke="#6b7280" stroke-width="1" stroke-dasharray="4,3"/>
+            <!-- 垂直虚线 x=240 -->
+            <line x1="240" y1="84" x2="240" y2="215" stroke="#6b7280" stroke-width="1" stroke-dasharray="4,3"/>
+            <!-- 水平虚线 y=166 -->
+            <line x1="32" y1="166" x2="240" y2="166" stroke="#6b7280" stroke-width="1" stroke-dasharray="4,3"/>
+            <!-- 水平虚线 y=84 -->
+            <line x1="32" y1="84" x2="240" y2="84" stroke="#6b7280" stroke-width="1" stroke-dasharray="4,3"/>
+
+            <!-- 点 P₀(120,166) -->
+            <circle cx="120" cy="166" r="2.8" fill="#374151"/>
+            <text x="107" y="162" font-size="11" fill="#374151" font-family="serif">P₀</text>
+
+            <!-- 点 P(240,84) -->
+            <circle cx="240" cy="84" r="2.8" fill="#374151"/>
+            <text x="243" y="80" font-size="11" fill="#374151" font-family="serif">P</text>
+
+            <!-- 点 T(240,106) -->
+            <circle cx="240" cy="106" r="2.8" fill="#374151"/>
+            <text x="243" y="103" font-size="11" fill="#374151" font-family="serif">T</text>
+
+            <!-- 点 Q(240,166) -->
+            <circle cx="240" cy="166" r="2.8" fill="#374151"/>
+            <text x="243" y="171" font-size="11" fill="#374151" font-family="serif">Q</text>
+
+            <!-- Δy 标注线：P(240,84)→Q(240,166)，在 x=257 -->
+            <line x1="257" y1="84" x2="257" y2="166" stroke="#374151" stroke-width="1"/>
+            <line x1="253" y1="84"  x2="261" y2="84"  stroke="#374151" stroke-width="1"/>
+            <line x1="253" y1="166" x2="261" y2="166" stroke="#374151" stroke-width="1"/>
+            <text x="263" y="130" font-size="11" fill="#374151" font-family="serif">Δy</text>
+
+            <!-- dy 标注线：T(240,106)→Q(240,166)，在 x=280 -->
+            <line x1="280" y1="106" x2="280" y2="166" stroke="#374151" stroke-width="1"/>
+            <line x1="276" y1="106" x2="284" y2="106" stroke="#374151" stroke-width="1"/>
+            <line x1="276" y1="166" x2="284" y2="166" stroke="#374151" stroke-width="1"/>
+            <text x="285" y="142" font-size="11" fill="#374151" font-family="serif">dy</text>
+
+            <!-- Δx 标注 -->
+            <line x1="120" y1="223" x2="240" y2="223" stroke="#374151" stroke-width="1"/>
+            <line x1="120" y1="220" x2="120" y2="226" stroke="#374151" stroke-width="1"/>
+            <line x1="240" y1="220" x2="240" y2="226" stroke="#374151" stroke-width="1"/>
+            <text x="180" y="236" font-size="11" fill="#374151" font-family="serif" text-anchor="middle">Δx</text>
+
+            <!-- x轴标注 -->
+            <text x="120" y="240" font-size="11" fill="#374151" font-family="serif" text-anchor="middle">x₀</text>
+            <text x="240" y="240" font-size="11" fill="#374151" font-family="serif" text-anchor="middle">x₀+Δx</text>
+
+            <!-- y轴标注 -->
+            <text x="29" y="170" font-size="11" fill="#374151" font-family="serif" text-anchor="end">y₀</text>
+            <text x="31" y="88" font-size="11" fill="#374151" font-family="serif" text-anchor="end">y₀+Δy</text>
+          </svg>
+          <figcaption style="margin-top:8px;color:#64748b;font-size:13px;">图 1.2 微分的几何意义</figcaption>
+        </figure>
+
+        <ul>
+          <li>$\Delta y$：曲线上两点之间的真实纵向变化。</li>
+          <li>$dy$：切线上对应的纵向变化。</li>
+          <li>当 $\Delta x$ 很小时，切线局部贴近曲线，所以 $dy\approx\Delta y$。</li>
+        </ul>
+
+        <div class="note">
+          <strong>形象比喻：</strong>
+          可以把曲线看成一段弯曲的山路。导数像是你脚下这一点的“坡度”，只告诉你当前有多陡；微分像是按照这个坡度向前走一小步时预计会上升多少；真实增量 $\Delta y$ 则是沿着真实弯曲山路走过去后实际升高了多少。步子 $\Delta x$ 越小，按当前坡度估计的升高量通常越接近真实升高量。
+        </div>
+
+        <h3 id="section-1-3">1.3 微分与导数的关系</h3>
+
+        <p>
+          导数和微分紧密相关，但它们关注的问题不同。导数回答“变化有多快”，微分回答“变化一点点时，函数大约变多少”。
+          二者通过公式 $$dy=f'(x)dx$$ 连接起来。
+        </p>
+
+        <div class="comparison">
+          <div class="compare-card">
+            <h4>导数：变化率</h4>
+            <p>
+              导数 $f'(x)$ 是函数在点 $x$ 处的瞬时变化率，也就是切线斜率。
+            </p>
+            <div class="formula-card">
+              $$f'(x)=\lim_{\Delta x\to0}\frac{\Delta y}{\Delta x}$$
+            </div>
+          </div>
+
+          <div class="compare-card">
+            <h4>微分：线性变化量</h4>
+            <p>
+              微分 $dy$ 是当自变量产生微小变化 $dx$ 时，函数值的线性近似改变量。
+            </p>
+            <div class="formula-card">
+              $$dy=f'(x)dx$$
+            </div>
+          </div>
+        </div>
+
+        <div class="interactive">
+          <h4>互动：导数控制斜率，微分近似变化量</h4>
+
+          <p>
+            拖动滑块调整函数、点 $x_0$ 与增量 $\Delta x$，观察真实增量 $\Delta y$、微分 $dy$ 与误差 $\Delta y-dy$ 的变化。
+          </p>
+
+          <div class="interactive-grid">
+            <div class="canvas-wrap">
+              <canvas id="diffCanvas" width="540" height="420"></canvas>
+            </div>
+
+            <div class="control-panel">
+              <!-- 函数选择 -->
+              <div>
+                <p class="cp-section-title">选择函数</p>
+                <select class="func-select" id="funcSelect">
+                  <option value="x2">f(x) = x²</option>
+                  <option value="sinx">f(x) = sin x</option>
+                  <option value="ex3">f(x) = eˣᐟ³</option>
+                  <option value="x3mx">f(x) = x³ − x</option>
+                </select>
+              </div>
+
+              <!-- 增量滑块 -->
+              <div class="slider-section">
+                <div class="slider-header">
+                  <span class="s-label">增量</span>
+                  <span class="s-sym">Δx</span>
+                  <span class="s-val" id="dxValue">0.70</span>
+                </div>
+                <input id="dxSlider" type="range" min="-2" max="2" step="0.01" value="0.7" />
+              </div>
+
+              <!-- 基点滑块 -->
+              <div class="slider-section">
+                <div class="slider-header">
+                  <span class="s-label">基点</span>
+                  <span class="s-sym">x₀</span>
+                  <span class="s-val" id="x0Value">0.80</span>
+                </div>
+                <input id="x0Slider" type="range" min="-3" max="3" step="0.01" value="0.8" />
+              </div>
+
+              <!-- 指标卡 -->
+              <div class="metrics">
+                <div class="metric">
+                  <span class="label">导数 f′(x₀)</span>
+                  <span class="value" id="slopeMetric">1.6000</span>
+                </div>
+                <div class="metric">
+                  <span class="label">真实增量 Δy</span>
+                  <span class="value" id="deltaYMetric">1.6100</span>
+                </div>
+                <div class="metric">
+                  <span class="label">微分 dy</span>
+                  <span class="value" id="dyMetric">1.1200</span>
+                </div>
+                <div class="metric">
+                  <span class="label">误差 Δy − dy</span>
+                  <span class="value" id="errorMetric">0.4900</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note">
+            <strong>操作建议：</strong>
+            先固定 $x_0$，逐渐减小 $|\Delta x|$，观察 $dy$ 与 $\Delta y$ 是否靠近；再改变 $x_0$，观察导数变化如何影响微分大小。你会发现 $dy$ 和 $\Delta y$ 越来越接近。
+            这说明：微分本质上是函数在一点附近的最佳线性近似。
+          </div>
+        </div>
+
+        <h4>导数与微分的区别总结</h4>
+
+        <table>
+          <thead>
+            <tr>
+              <th>比较项</th>
+              <th>导数 $f'(x)$</th>
+              <th>微分 $dy$</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>核心含义</td>
+              <td>瞬时变化率</td>
+              <td>函数值的线性近似改变量</td>
+            </tr>
+            <tr>
+              <td>几何意义</td>
+              <td>切线斜率</td>
+              <td>切线上对应的纵向变化量</td>
+            </tr>
+            <tr>
+              <td>表达式</td>
+              <td>$f'(x)$</td>
+              <td>$dy=f'(x)dx$</td>
+            </tr>
+            <tr>
+              <td>依赖对象</td>
+              <td>只与点 $x$ 和函数有关</td>
+              <td>还与自变量变化量 $dx$ 有关</td>
+            </tr>
+            <tr>
+              <td>常见用途</td>
+              <td>判断单调性、极值、变化快慢</td>
+              <td>近似计算、误差估计、线性化建模</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 2 微分运算 -->
+      <section class="section" id="section-2">
+        <h2>2. 微分运算</h2>
+
+        <p class="lead">
+          微分运算的核心是先求导，再乘以 $dx$。因此，熟练掌握求导公式和求导法则，就能自然得到对应的微分公式。
+        </p>
+
+        <h3 id="section-2-1">2.1 基本初等函数微分公式</h3>
+
+        <table>
+          <thead>
+            <tr>
+              <th>函数</th>
+              <th>导数</th>
+              <th>微分</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>$y=C$</td>
+              <td>$y'=0$</td>
+              <td>$dy=0$</td>
+            </tr>
+            <tr>
+              <td>$y=x^\alpha$</td>
+              <td>$y'=\alpha x^{\alpha-1}$</td>
+              <td>$dy=\alpha x^{\alpha-1}dx$</td>
+            </tr>
+            <tr>
+              <td>$y=e^x$</td>
+              <td>$y'=e^x$</td>
+              <td>$dy=e^xdx$</td>
+            </tr>
+            <tr>
+              <td>$y=a^x$</td>
+              <td>$y'=a^x\ln a$</td>
+              <td>$dy=a^x\ln a\,dx$</td>
+            </tr>
+            <tr>
+              <td>$y=\ln x$</td>
+              <td>$y'=\frac{1}{x}$</td>
+              <td>$dy=\frac{1}{x}dx$</td>
+            </tr>
+            <tr>
+              <td>$y=\sin x$</td>
+              <td>$y'=\cos x$</td>
+              <td>$dy=\cos x\,dx$</td>
+            </tr>
+            <tr>
+              <td>$y=\cos x$</td>
+              <td>$y'=-\sin x$</td>
+              <td>$dy=-\sin x\,dx$</td>
+            </tr>
+            <tr>
+              <td>$y=\tan x$</td>
+              <td>$y'=\sec^2x$</td>
+              <td>$dy=\sec^2x\,dx$</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 id="section-2-2">2.2 微分运算法则</h3>
+
+        <p>
+          设$f$,$g$都是可微函数，$\alpha ,\beta$是常数则：
+        </p>
+
+        <div class="formula-card">
+          $$d(\alpha f \pm \beta g)=\alpha df\pm \beta dg$$
+        </div>
+
+        <div class="formula-card">
+          $$d(fg)=f\,dg+g\,df$$
+        </div>
+
+        <div class="formula-card">
+          $$d\left(\frac{f}{g}\right)=\frac{g\,df-f\,dg}{g^2},\quad g(x)\ne0$$
+        </div>
+
+
+        <div class="keybox">
+          <strong>操作口诀：</strong>
+          看到微分题，先识别函数结构；再按求导法则求导；最后乘上 $dx$ 或内部变量的微分。
+        </div>
+
+        <h4>例题：计算 $y=\arctan x + \frac{1}{2}\ln \frac{1+x}{1-x}$ 的微分.</h4>
+        <p>
+          解 由
+        </p>
+
+        <p>
+          $$y' = \frac{1}{1+x^2} + \frac{1}{2}\left(\frac{1}{1+x} + \frac{1}{1-x}\right) = \frac{1}{1+x^2} + \frac{1}{1-x^2} = \frac{2}{1-x^4}$$
+        </p>
+        <p>
+          可得
+        </p>
+
+        <p>
+          $$dy = \frac{2}{1-x^4} dx.$$
+        </p>
+
+
+        <h3 id="section-2-3">2.3 一阶微分的形式不变性</h3>
+
+        <p>
+          一阶微分的形式不变性是指：无论自变量是独立变量，还是中间变量，只要相应函数可导，一阶微分都可以保持同样的形式。
+        </p>
+
+        <div class="formula-card">
+          $$dy=f'(u)du$$
+        </div>
+
+        <p>
+          若 $y=f(u),u=g(x)$ 都是可微函数，那么复合函数 $y=f\circ g(x)$ 也是可微的。则：
+        </p>
+
+        <div class="formula-card">
+          $$dy=f'(u)u'(x)dx=f'(g(x))g'(x)dx$$
+        </div>
+
+        <div class="note">
+          <strong>重要</strong>
+          一阶微分形式不变性本质上是链式法则的微分表达。它让我们可以像“搭积木”一样处理复合函数。无论里面套了几层函数，都可以从外到内逐层取微分。
+        </div>
+
+        <h4>例题：设 $y = \ln(1+e^{2x})$, 求 $dy$.</h4>
+
+        <p>
+          解 利用一阶微分的形式不变性得
+        </p>
+
+        <p>
+          $$dy = d\ln(1+e^{2x}) = \frac{1}{1+e^{2x}}d(1+e^{2x})$$
+          $$= \frac{1}{1+e^{2x}}e^{2x}d(2x) = \frac{2e^{2x}}{1+e^{2x}}dx$$.
+        </p>
+      </section>
+
+      <!-- 3 中值定理 -->
+      <section class="section" id="section-3">
+        <h2>3. 微分学中值定理</h2>
+
+        <p class="lead">
+          中值定理连接了函数在区间上的整体变化与某一点处的局部变化。它们是微分学从“局部斜率”走向“整体性质”的桥梁。
+        </p>
+
+        <h3 id="section-3-1">3.1 局部极值与 Fermat 定理</h3>
+
+        <p>
+          局部极值描述的是函数在某个点附近的相对高低，而不是在整个定义域上的全局最大或最小。
+        </p>
+
+        <p>
+          <strong>局部极值的定义</strong>
+        </p>
+
+        <p>
+          <strong>定义</strong>  设有函数$f(x)$, 如果在点$x_0$的某个邻域$O(x_0, δ)$上恒成立
+        </p>
+
+        <p>
+          $$f(x) \le f(x_0) (f(x) \ge f(x_0)),$$
+        </p>
+
+        <p>
+          则称$x_0$为函数$f$的局部极大值点(局部极小值点),简称为极大值点(极小值点),称$f(x_0)$是函数$f$的局部极大值(局部极小值),简称为极大值(极小值).
+        </p>
+
+        <p>
+          极大值点与极小值点统称为极值点, 极大值与极小值统称为极值. 必须注意, 极值只取决于点$x_0$邻近函数$f$的性状, 即只是在$x_0$的某邻域内才相对地有意义, 所以是一种局部性质.
+        </p>
+
+        <!-- 局部极值示意图 -->
+        <figure style="margin:20px 0;text-align:center;">
+          <svg viewBox="0 0 480 260" width="100%" style="max-width:500px;display:inline-block;">
+            <defs>
+              <!-- x 轴箭头 -->
+              <marker id="axArr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L8,3 z" fill="#374151"/>
+              </marker>
+              <!-- y 轴箭头：线段从下向上，orient=auto 跟随方向，用同一个尖头就能正确指向上 -->
+              <marker id="axArr2" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L8,3 z" fill="#374151"/>
+              </marker>
+            </defs>
+
+            <!-- x 轴 -->
+            <line x1="30" y1="210" x2="460" y2="210" stroke="#374151" stroke-width="1.5" marker-end="url(#axArr)"/>
+            <!-- y 轴：从下到上，箭头自然指上 -->
+            <line x1="40" y1="230" x2="40" y2="16" stroke="#374151" stroke-width="1.5" marker-end="url(#axArr2)"/>
+
+            <!-- 原点 O -->
+            <text x="24" y="226" font-size="13" fill="#374151" font-family="Microsoft YaHei,Arial">O</text>
+            <!-- x 轴标签 -->
+            <text x="452" y="226" font-size="13" fill="#374151" font-family="Microsoft YaHei,Arial">x</text>
+            <!-- y 轴标签 -->
+            <text x="26" y="14" font-size="13" fill="#374151" font-family="Microsoft YaHei,Arial">y</text>
+
+            <!-- 曲线 -->
+            <path d="M 45,170
+                     C 80,165 95,68 130,72
+                     C 165,76 175,158 210,162
+                     C 245,166 270,90 310,70
+                     C 335,58 345,110 370,100
+                     C 395,90 420,65 450,55"
+                  fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linejoin="round"/>
+
+            <!-- 极大点1: x=130, y=72 -->
+            <line x1="40" y1="72"  x2="130" y2="72"  stroke="#6b7280" stroke-width="1" stroke-dasharray="5,4"/><!-- 水平虚线 -->
+            <line x1="130" y1="72" x2="130" y2="210" stroke="#6b7280" stroke-width="1" stroke-dasharray="5,4"/><!-- 垂直虚线 -->
+            <circle cx="130" cy="72" r="3.5" fill="#2563eb"/>
+            <text x="80" y="60" font-size="12" fill="#374151" font-family="Microsoft YaHei,Arial">极大值</text>
+            <line x1="100" y1="63" x2="125" y2="72" stroke="#9ca3af" stroke-width="0.8"/>
+            <text x="118" y="224" font-size="12" fill="#374151" font-family="Microsoft YaHei,Arial" text-anchor="middle">极大值点</text>
+
+            <!-- 极小点1: x=210, y=162 -->
+            <line x1="40" y1="162" x2="210" y2="162" stroke="#6b7280" stroke-width="1" stroke-dasharray="5,4"/><!-- 水平虚线 -->
+            <line x1="210" y1="162" x2="210" y2="210" stroke="#6b7280" stroke-width="1" stroke-dasharray="5,4"/><!-- 垂直虚线 -->
+            <circle cx="210" cy="162" r="3.5" fill="#2563eb"/>
+            <text x="215" y="170" font-size="12" fill="#374151" font-family="Microsoft YaHei,Arial">极小值</text>
+
+            <!-- 极大点2: x=320, y=70 -->
+            <line x1="320" y1="70" x2="320" y2="210" stroke="#6b7280" stroke-width="1" stroke-dasharray="5,4"/><!-- 垂直虚线 -->
+            <circle cx="320" cy="70" r="3.5" fill="#2563eb"/>
+            <text x="318" y="58" font-size="12" fill="#374151" font-family="Microsoft YaHei,Arial">极大值</text>
+            <text x="320" y="224" font-size="12" fill="#374151" font-family="Microsoft YaHei,Arial" text-anchor="middle">极大值点</text>
+
+            <!-- 极小点2: x=360, y=100 -->
+            <line x1="40" y1="100" x2="370" y2="100" stroke="#6b7280" stroke-width="1" stroke-dasharray="5,4"/><!-- 水平虚线 -->
+            <line x1="360" y1="100" x2="360" y2="210" stroke="#6b7280" stroke-width="1" stroke-dasharray="5,4"/><!-- 垂直虚线 -->
+            <circle cx="360" cy="100" r="3.5" fill="#2563eb"/>
+            <text x="345" y="90" font-size="12" fill="#374151" font-family="Microsoft YaHei,Arial">极小值</text>
+            <text x="370" y="224" font-size="12" fill="#374151" font-family="Microsoft YaHei,Arial" text-anchor="middle">极小值点</text>
+          </svg>
+          <figcaption style="font-size:13px;color:#6b7280;margin-top:6px;">图：函数的局部极大值与极小值示意</figcaption>
+        </figure>
+
+
+        <p>
+          <strong>定理(Fermat(费马)定理)</strong>  若点$x_0$是函数$f$的一个极值点，且$f$在$x_0$点可导，则必有
+        </p>
+
+        <div class="formula-card">
+          $$f'(x_0)=0$$
+        </div>
+
+        <p>
+          <strong>费马定理的几何意义：</strong>
+          函数$f$的图像如果在相应于极值的点处有切线的话,那一定是一条水平切线。
+        </p>
+
+        <div class="keybox">
+          <strong>注意：</strong>
+          $f'(x_0)=0$ 是可导极值点的必要条件，不是充分条件。
+          例如 $f(x)=x^3$ 在 $x=0$ 处导数为 $0$，但并没有极值。
+        </div>
+
+        <h3 id="section-3-2">3.2 Rolle 定理</h3>
+
+        <p>
+          <strong>定理(Rolle(罗尔)定理)</strong>  若函数 $f(x)$ 满足：
+        </p>
+
+        <ul>
+          <li>在闭区间 $[a,b]$ 上连续；</li>
+          <li>在开区间 $(a,b)$ 内可导；</li>
+          <li>在区间端点处的函数值相等，即 $f(a)=f(b)$；</li>
+        </ul>
+
+        <p>
+          则至少存在一点 $\xi\in(a,b)$，使得：$f'(\xi)=0$
+        </p>
+
+        <p>
+          <strong>证</strong>  因为$f$在$[a,b]$上连续,所以它在$[a,b]$上必定能取得最大值 $M$ 和最小值 $m$ (连续函数的<a href="#" style="color:#2563eb;text-decoration:none;border-bottom:1px solid #93c5fd;">最值定理</a>).
+        </p>
+
+        <p>
+          如果 $M=m$ ,显然 $f$ 在 $[a,b]$ 上恒取常值 $M$ ,此时可取 $(a,b)$ 内任何一点作为 $\xi$ ,便有 $f'(\xi)=0$ .
+          如果 $M>m$ ,因为 $f(a)=f(b)$ ,所以 $M$ 和 $m$ 之一必不等于 $f(a)$ ,不妨设 $M \neq f(a)$ ( $m \neq f(a)$ 的情况可类似讨论),此时必有点 $\xi \in (a,b)$ ,使得 $f(\xi)=M$ .因为 $f$ 在 $\xi$ 点可导,且取到最大值,由 Fermat 定理即得 $f'(\xi)=0$ .
+        </p>
+
+        <p>
+          <strong>罗尔定理的几何意义</strong> 在定理的条件下，曲线$y=f(x)$上必有一点,使得曲线在该点处的切线与$x$轴平行。
+        </p>
+
+        <h3 id="section-3-3">3.3 Lagrange 中值定理</h3>
+
+        <p>
+          <strong>定理 (Lagrange 中值定理)</strong>  若函数 $f(x)$ 在闭区间 $[a,b]$ 上连续，在开区间 $(a,b)$ 内可导，则至少存在一点 $\xi\in(a,b)$，使得：
+        </p>
+
+        <div class="formula-card">
+          $$f(b)-f(a)=f'(\xi)(b-a)$$
+        </div>
+
+        <p>
+          拉格朗日中值定理说明：在某个位置，瞬时变化率一定等于整体平均变化率。
+        </p>
+
+        <div class="formula-card">
+          显然,Rolle定理是Lagrange 定理的特殊情况。
+        </div>
+
+        <div class="note">
+          <strong>生活化理解：</strong>
+          如果一辆车在 2 小时内行驶 120 公里，平均速度是 60 公里每小时。
+          那么在这 2 小时中的某一瞬间，它的瞬时速度一定等于 60 公里每小时。
+        </div>
+
+        <!-- Rolle 定理与 Lagrange 中值定理示意图 -->
+        <figure style="margin:24px 0;text-align:center;">
+          <div style="display:inline-flex;gap:32px;flex-wrap:wrap;justify-content:center;">
+
+            <!-- ==== Rolle 定理 ==== -->
+            <div style="text-align:center;">
+              <svg viewBox="0 0 220 180" width="210" style="display:block;">
+                <defs>
+                  <marker id="ra" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="#374151"/></marker>
+                  <marker id="ra2" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="#374151"/></marker>
+                </defs>
+                <!-- 坐标轴 -->
+                <line x1="20" y1="150" x2="210" y2="150" stroke="#374151" stroke-width="1.4" marker-end="url(#ra)"/>
+                <line x1="28" y1="165" x2="28" y2="10"  stroke="#374151" stroke-width="1.4" marker-end="url(#ra2)"/>
+                <text x="14" y="163" font-size="11" fill="#374151" font-family="serif">O</text>
+                <text x="203" y="163" font-size="11" fill="#374151" font-family="serif">x</text>
+                <text x="18" y="10"  font-size="11" fill="#374151" font-family="serif">f(x)</text>
+
+                <!-- 曲线 f(a)=f(b) 的波形 -->
+                <path d="M 50,110 C 65,112 72,55 100,52 C 128,49 138,100 155,108"
+                      fill="none" stroke="#2563eb" stroke-width="2"/>
+
+                <!-- f(a)=f(b) 的水平参考线 -->
+                <line x1="50" y1="110" x2="155" y2="110" stroke="#ca8a04" stroke-width="1.2"/>
+
+                <!-- 切线：在 ξ 处水平切线 -->
+                <line x1="80" y1="52" x2="122" y2="52" stroke="#ca8a04" stroke-width="1.2"/>
+
+                <!-- 垂直虚线 -->
+                <line x1="50"  y1="110" x2="50"  y2="150" stroke="#6b7280" stroke-width="1" stroke-dasharray="4,3"/>
+                <line x1="155" y1="108" x2="155" y2="150" stroke="#6b7280" stroke-width="1" stroke-dasharray="4,3"/>
+                <line x1="100" y1="52"  x2="100" y2="150" stroke="#6b7280" stroke-width="1" stroke-dasharray="4,3"/>
+
+                <!-- 点 -->
+                <circle cx="50"  cy="110" r="2.5" fill="#2563eb"/>
+                <circle cx="155" cy="108" r="2.5" fill="#2563eb"/>
+                <circle cx="100" cy="52"  r="2.5" fill="#2563eb"/>
+
+                <!-- x 轴标注 -->
+                <text x="46"  y="162" font-size="11" fill="#374151" font-family="serif" text-anchor="middle">a</text>
+                <text x="99"  y="162" font-size="11" fill="#374151" font-family="serif" text-anchor="middle">ξ</text>
+                <text x="155" y="162" font-size="11" fill="#374151" font-family="serif" text-anchor="middle">b</text>
+              </svg>
+              <p style="font-size:12px;color:#6b7280;margin-top:4px;">Rolle 定理</p>
+            </div>
+
+            <!-- ==== Lagrange 中值定理 ==== -->
+            <div style="text-align:center;">
+              <svg viewBox="0 0 220 185" width="210" style="display:block;">
+                <defs>
+                  <marker id="la" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="#374151"/></marker>
+                  <marker id="la2" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="#374151"/></marker>
+                </defs>
+
+                <!-- 坐标轴 -->
+                <line x1="20" y1="152" x2="212" y2="152" stroke="#374151" stroke-width="1.4" marker-end="url(#la)"/>
+                <line x1="28" y1="168" x2="28" y2="8"   stroke="#374151" stroke-width="1.4" marker-end="url(#la2)"/>
+                <text x="14" y="165" font-size="11" fill="#374151" font-family="serif">O</text>
+                <text x="205" y="165" font-size="11" fill="#374151" font-family="serif">x</text>
+                <text x="20" y="9"   font-size="11" fill="#374151" font-family="serif">y</text>
+
+                <!-- S形曲线：A(50,120) 先升弱弱再降再升到 B(175,48) -->
+                <!-- 参考图：曲线从 A 出发先升起一个小峰，再降入谷，再升到 B -->
+                <path d="M 50,120
+                         C 58,100 72,72 88,68
+                         C 104,64 112,95 128,98
+                         C 144,101 158,62 175,48"
+                      fill="none" stroke="#2563eb" stroke-width="2"/>
+
+                <!-- 弦 AB -->
+                <line x1="50" y1="120" x2="175" y2="48" stroke="#374151" stroke-width="1" stroke-dasharray="5,3"/>
+
+                <!-- 平行切线：过 ξ 点(88,68)，斜率与弦 AB 相同 -->
+                <!-- 弦斜率 (48-120)/(175-50) = -0.576，左右各延40px -->
+                <line x1="48" y1="91" x2="128" y2="45" stroke="#6b9fd4" stroke-width="1.2"/>
+
+                <!-- 垂直虚线 -->
+                <line x1="50"  y1="120" x2="50"  y2="152" stroke="#6b7280" stroke-width="1" stroke-dasharray="4,3"/>
+                <line x1="88"  y1="68"  x2="88"  y2="152" stroke="#6b7280" stroke-width="1" stroke-dasharray="4,3"/>
+                <line x1="175" y1="48"  x2="175" y2="152" stroke="#6b7280" stroke-width="1" stroke-dasharray="4,3"/>
+
+                <!-- 点 A B 及 ξ 处点 -->
+                <circle cx="50"  cy="120" r="2.5" fill="#2563eb"/>
+                <circle cx="175" cy="48"  r="2.5" fill="#2563eb"/>
+                <circle cx="88"  cy="68"  r="2.5" fill="#2563eb"/>
+
+                <!-- A B 标签 -->
+                <text x="38" y="118" font-size="11" fill="#374151" font-family="serif">A</text>
+                <text x="178" y="46" font-size="11" fill="#374151" font-family="serif">B</text>
+
+                <!-- x 轴标注 -->
+                <text x="50"  y="164" font-size="11" fill="#374151" font-family="serif" text-anchor="middle">a</text>
+                <text x="88"  y="164" font-size="11" fill="#374151" font-family="serif" text-anchor="middle">ξ</text>
+                <text x="175" y="164" font-size="11" fill="#374151" font-family="serif" text-anchor="middle">b</text>
+              </svg>
+              <p style="font-size:12px;color:#6b7280;margin-top:4px;">Lagrange 中值定理</p>
+            </div>
+
+          </div>
+          <figcaption style="font-size:13px;color:#6b7280;margin-top:8px;">图：Rolle 中值定理（左）与 Lagrange 中值定理（右）示意</figcaption>
+        </figure>
+
+        <h3 id="section-3-4">3.4 Cauchy 柯西中值定理</h3>
+
+        <p>
+          <strong>定理(Cauchy中值定理)</strong>  若函数 $f(x)$ 与 $g(x)$ 在闭区间 $[a,b]$ 上连续，在开区间 $(a,b)$ 内可导，
+          且对任意 $x\in(a,b)$，有 $g'(x)\ne0$，则至少存在一点 $\xi\in(a,b)$，使得：
+        </p>
+
+        <div class="formula-card">
+          $$\frac{f'(\xi)}{g'(\xi)}=\frac{f(b)-f(a)}{g(b)-g(a)}$$
+        </div>
+
+        <p>
+          柯西中值定理可以看作拉格朗日中值定理的推广。当取 $g(x)=x$ 时，就回到拉格朗日中值定理。
+        </p>
+
+        <div class="note">
+          <strong>生活化理解：</strong>我一小时跑了5km，你一小时跑了20km。要么你的速度一直是我的20/5=4倍，要么你一部分比我四倍还快，一部分比我四倍慢，在这转换的这一点，你的速度是我的四倍。
+        </div>
+
+        <h4>例题：证明：当$x>0$时，成立不等式
+          $$\frac{1}{2(1+x)} < \frac{x-\ln(1+x)}{x^2} < \frac{1}{2}$$
+        </h4>
+
+        <p>
+          证 设 $f(x)=x-\ln(1+x)$, $g(x)=x^2$，则
+        </p>
+
+        <p>
+          $$f'(x)=1-\frac{1}{1+x}=\frac{x}{1+x}，g'(x)=2x.$$
+        </p>
+
+        <p>
+          当 $x>0$ 时，应用 Cauchy 中值定理，得
+          $$\frac{x-\ln(1+x)}{x^2} = \frac{f(x)-f(0)}{g(x)-g(0)} = \frac{f'(\xi)}{g'(\xi)} = \frac{\frac{\xi}{1+\xi}}{2\xi} = \frac{1}{2(1+\xi)}$$
+        </p>
+
+        <p>
+          其中$0<\xi< x$ ，注意到 $1< 1+\xi< 1+x $ 即得结论.
+        </p>
+      </section>
+
+      <!-- 4 应用 -->
+      <section class="section" id="section-4">
+        <h2>4. 微分应用</h2>
+
+        <p class="lead">
+          微分最常见的应用是近似计算与误差估计。它的基本思想是：用简单的线性表达式代替复杂函数在局部的变化。
+        </p>
+
+        <h3 id="section-4-1">4.1 近似计算</h3>
+
+        <p>
+          由微分定义：
+        </p>
+
+        <div class="formula-card">
+          $$\Delta y=f(x_0+\Delta x)-f(x_0)\approx dy=f'(x_0)\Delta x$$
+        </div>
+
+        <p>
+          因此：
+        </p>
+
+        <div class="formula-card">
+          $$f(x_0+\Delta x)\approx f(x_0)+f'(x_0)\Delta x$$
+        </div>
+
+        <h4>例题：试求$\sqrt{101}$的近似值</h4>
+
+        <p>
+          解 注意到所求值$\sqrt{101} = \sqrt{100+1} = 10\sqrt{1+0.01}$，
+          我们首先考察函数$\sqrt{1+x}$在$x=0$附近的估算.
+          由于$(\sqrt{1+x})' = \frac{1}{2\sqrt{1+x}}$, $(\sqrt{1+x})'|_{x=0} = \frac{1}{2}$. 所以当$\Delta x$非常小时, 有
+          $$\sqrt{1+\Delta x} = 1+\frac{1}{2}\Delta x + o(\Delta x)(\Delta x \to 0). $$ 
+          或者说当$\Delta x$很小时,
+          $$\sqrt{1+\Delta x} \approx 1+\frac{1}{2}\Delta x.$$
+          取$\Delta x = 0.01$时, 可视为$\Delta x$比较小, 故有
+          $$\sqrt{101} = 10\sqrt{1+0.01} \approx 10 \times (1+0.005) = 10.05.$$
+        </p>
+
+        <h3 id="section-4-2">4.2 误差估计</h3>
+
+        <p>
+          在科学实验和生产实践中，经常需要测量各种数据. 如果某个量的精确值为 $x$，它的近似值为 $x_0$，那么称 $|x-x_0|$ 为 $x_0$ 的<strong>绝对误差</strong>，称绝对误差与 $|x_0|$ 的比值 $\dfrac{|x-x_0|}{|x_0|}$ 为 $x_0$ 的<strong>相对误差</strong>.
+        </p>
+
+        <p>
+          由于精确值 $x$ 实际上是无法知道的，因而只能根据测量仗器的精度等因素，设法确定误差的范围. 如果可以确定
+        </p>
+
+        <div class="formula-card">
+          $$|x-x_0|<\delta_x,$$
+        </div>
+
+        <p>
+          则称 $\delta_x$ 为绝对误差限，称 $\delta_x^* = \dfrac{\delta_x}{|x_0|}$ 为<strong>相对误差限</strong>.
+        </p>
+
+        <p><strong>例 </strong>　设测得圆形材料截面的直径 $D_0 = 60.03\text{ mm}$，测量的绝对误差限 $\delta_D = 0.05\text{ mm}$，试估计由此计算得到的截面积 $A_0$ 的绝对误差和相对误差.</p>
+
+        <p><strong>解</strong>　由圆的面积 $A$ 与直径 $D$ 的关系式 $A = \dfrac{\pi}{4}D^2$，得</p>
+
+        <div class="formula-card">
+          $$\delta_A = |A'(D_0)|\,\delta_D = \frac{\pi}{2}D_0 \cdot \delta_D = \frac{\pi}{2} \cdot 60.03 \cdot 0.05 \approx 4.715\ (\text{mm}^2),$$
+        </div>
+
+        <div class="formula-card">
+          $$\delta_A^* = \frac{\delta_A}{A(D_0)} = \frac{\dfrac{\pi}{2}D_0 \cdot \delta_D}{\dfrac{\pi}{4}D_0^2} = 2\,\frac{\delta_D}{D_0} = 2 \cdot \frac{0.05}{60.03} \approx 0.17\%.$$
+        </div>
+
+        <p>因而，绝对误差 $|\Delta A| \leq 4.715\text{ mm}^2$，相对误差 $\left|\dfrac{\Delta A}{A_0}\right| \leq 0.17\%$.</p>
+
+      </section>
+
+      <!-- 练习与答案正文模块 -->
+      <section class="section" id="exercise-section">
+        <h2>练习与答案</h2>
+
+        <p class="lead">
+          本部分用于巩固“一元函数的微分”的核心概念、基本运算和应用方法。练习分为基础题与提升题，每题均配有可展开答案。
+        </p>
+
+        <h3 id="exercise-basic">计算题</h3>
+        
+        <div class="exercise-card" style="margin-bottom:16px;">
+          <p><strong>1.</strong>　求下列函数的微分：</p>
+          <p style="margin-left:1em;">
+            (1)　$y = x\sin 2x$；
+            &emsp;&emsp;&emsp;&emsp;
+            (2)　$y = \dfrac{\ln x}{\sqrt{x}}$；
+          </p>
+          <p style="margin-left:1em;">
+            (3)　$y = \dfrac{x}{\sqrt{x^2+1}}$；
+            &emsp;&emsp;&emsp;
+            (4)　$y = x^3 e^{2x}$；
+          </p>
+          <p style="margin-left:1em;">
+            (5)　$y = \tan^2 x + \ln\cos x$；
+            &emsp;&emsp;
+            (6)　$y = e^{-x}\sin(2x+3)$；
+          </p>
+          <p style="margin-left:1em;">
+            (7)　$y = \arctan\dfrac{1-x^2}{1+x^2}$；
+            &emsp;&emsp;
+            (8)　$y = e^{x^2}\tan^2(1+3x^2)$.
+          </p>
+        
+          <details style="margin-top:10px;">
+            <summary>查看答案</summary>
+            <p style="margin-left:1em;">
+              (1)　$dy = (\sin 2x + 2x\cos 2x)\,dx$
+            </p>
+            <p style="margin-left:1em;">
+              (2)　$dy = \dfrac{2 - \ln x}{2x^{3/2}}\,dx$
+            </p>
+            <p style="margin-left:1em;">
+              (3)　$dy = \dfrac{1}{(x^2+1)^{3/2}}\,dx$
+            </p>
+            <p style="margin-left:1em;">
+              (4)　$dy = x^2 e^{2x}(3+2x)\,dx$
+            </p>
+            <p style="margin-left:1em;">
+              (5)　$dy = \sin 2x\,\tan x\cdot\dfrac{1}{\cos^2 x} - \tan x\,dx$，即 $dy = \tan x(2\tan x\sec^2 x - 1)\,dx$
+            </p>
+            <p style="margin-left:1em;">
+              (6)　$dy = e^{-x}(2\cos(2x+3) - \sin(2x+3))\,dx$
+            </p>
+            <p style="margin-left:1em;">
+              (7)　$dy = \dfrac{-4x}{(1+x^2)^2}\cdot\dfrac{1}{1+\left(\frac{1-x^2}{1+x^2}\right)^2}\,dx = \dfrac{-2}{1+x^2}\,dx$
+            </p>
+            <p style="margin-left:1em;">
+              (8)　$dy = e^{x^2}\left[2x\tan^2(1+3x^2) + 6x\tan(1+3x^2)\sec^2(1+3x^2)\right]dx$
+            </p>
+          </details>
+        </div>
+        
+        <div class="exercise-card" style="margin-bottom:16px;">
+          <p><strong>2.</strong>　已知 $u = u(x)$，$v = v(x)$ 均为可微函数，求下列函数的微分：</p>
+          <p style="margin-left:1em;">
+            (1)　$y = \arctan\dfrac{u}{v}$；
+            &emsp;&emsp;&emsp;&emsp;
+            (2)　$y = \ln\sqrt{u^2 + v^2}$.
+          </p>
+        
+          <details style="margin-top:10px;">
+            <summary>查看答案</summary>
+            <p style="margin-left:1em;">
+              (1)　$dy = \dfrac{v\,du - u\,dv}{u^2 + v^2}$
+            </p>
+            <p style="margin-left:1em;">
+              (2)　$dy = \dfrac{u\,du + v\,dv}{u^2 + v^2}$
+            </p>
+          </details>
+        </div>
+        
+        <h3 id="exercise-advanced">证明题</h3>
+        
+        <div class="exercise-card" style="margin-bottom:16px;">
+          <p><strong>1.</strong>　设 $x^y = y^x$（$x>0$，$y>0$）. 证明：$y(x\ln y - y)\,dx = x(y\ln x - x)\,dy$.</p>
+          <details style="margin-top:10px;">
+            <summary>查看提示</summary>
+            <p>对 $x^y = y^x$ 两边取对数得 $y\ln x = x\ln y$，对两边微分再整理即可得证.</p>
+          </details>
+        </div>
+        
+        <div class="exercise-card" style="margin-bottom:16px;">
+          <p><strong>2.</strong>　证明：如果 $y = \dfrac{x-a}{1+ax}$，则
+          $\dfrac{dx}{1+x^2} = \dfrac{dy}{1+y^2}$.</p>
+          <details style="margin-top:10px;">
+            <summary>查看提示</summary>
+            <p>对 $y$ 求微分，计算 $1+y^2$，化简后与 $\dfrac{1}{1+x^2}$ 比较即可.</p>
+          </details>
+        </div>
+        
+        <div class="exercise-card" style="margin-bottom:16px;">
+          <p><strong>3.</strong>　设 $xy = -1$. 　证明：$\dfrac{dy}{\sqrt{1+y^4}} = \dfrac{dx}{\sqrt{1+x^4}}$.</p>
+          <details style="margin-top:10px;">
+            <summary>查看提示</summary>
+            <p>由 $xy=-1$ 得 $y=-1/x$，$dy = dx/x^2$，代入左边化简即得右边.</p>
+          </details>
+        </div>
+        
+        <div class="exercise-card" style="margin-bottom:16px;">
+          <p><strong>4.</strong>　应用微分学中値定理证明下列不等式：</p>
+          <p style="margin-left:1em;">(1)　$|\arctan b - \arctan a| \leq |b - a|$；</p>
+          <p style="margin-left:1em;">(2)　$\dfrac{x}{1+x} < \ln(1+x) < x$　（$x>0$）；</p>
+          <p style="margin-left:1em;">(3)　$nb^{n-1}(a-b) \leq a^n - b^n \leq na^{n-1}(a-b)$　（$n\geq1$，$a>b>0$）.</p>
+          <details style="margin-top:10px;">
+            <summary>查看提示</summary>
+            <p>(1) 对 $\arctan x$ 应用拉格朗日中値定理，注意 $|f'(\xi)|=\dfrac{1}{1+\xi^2}\leq 1$.</p>
+            <p>(2) 对 $f(x)=\ln(1+x)-\dfrac{x}{1+x}$ 和 $g(x)=x-\ln(1+x)$ 分别利用单调性.</p>
+            <p>(3) 对 $f(t)=t^n$ 在 $[b,a]$ 上应用拉格朗日中値定理.</p>
+          </details>
+        </div>
+        
+        <div class="exercise-card" style="margin-bottom:16px;">
+          <p><strong>5.</strong>　证明恒等式：</p>
+          <p style="margin-left:1em;">(1)　$\arcsin x + \arccos x = \dfrac{\pi}{2}$，　$-1\leq x\leq 1$；</p>
+          <p style="margin-left:1em;">(2)　$3 \arccos x - \arccos(3x - 4x^3) = \pi$，　$\quad x \in \left[-\frac{1}{2}, \frac{1}{2}\right]$.</p>
+          <details style="margin-top:10px;">
+            <summary>查看提示</summary>
+            <p>(1) 令 $f(x) = \arcsin x + \arccos x$, 则
+              $$f'(x) = \frac{1}{\sqrt{1-x^2}} - \frac{1}{\sqrt{1-x^2}} = 0, \forall x \in (0,1)$$。
+              由于 $f(x)$ 在 $[0,1]$ 连续, 所以 $f(x) ≡ f(0) = \frac{\pi}{2}$。
+            </p>
+            <p>(2) 令$f(x)=3\arccos x-\arccos(3x-4x^3)$, 注意到$1-4x^2 \geq 0, \forall x \in (-\frac{1}{2}, \frac{1}{2})$,
+              所以
+              $$f'(x)=-\frac{3}{\sqrt{1-x^2}}+\frac{3-12x^2}{\sqrt{1-(3x-4x^3)^2}}=0, \forall x \in (-\frac{1}{2}, \frac{1}{2})$$.
+              由于$f(x)$在$[-\frac{1}{2}, \frac{1}{2}]$连续, 所以$f(x)=f(0)=3\frac{\pi}{2}-\frac{\pi}{2}=\pi$.
+            </p>
+          </details>
+        </div>
+      </section>
+
+      <div class="footer-note">
+        L2知识点页面 · 一元函数的微分 · 适用于高等数学 / 工程数学 / 数学建模基础学习
+      </div>
+    </main>
+
+    <!-- 右侧边栏 -->
+    <aside class="right-sidebar">
+      <section class="panel">
+        <div class="panel-header">
+          <h3>学习目标</h3>
+        </div>
+
+        <div class="panel-body">
+          <div class="side-card">
+            <ul>
+              <li>1.理解微分的概念和几何意义。</li>
+              <li>2.理解微分和导数的关系。</li>
+              <li>3.了解微分的四则运算法则和一阶微分的形式不变性，会求函数的微分。</li>
+              <li>4.了解微分在近似计算和误差估计中的应用。</li>
+              <li>5.理解并能应用 Rolle 定理，Lagrange 微分学中值定理，Cauchy中值定理。</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+
+      <section class="panel">
+        <div class="panel-header">
+          <h3>应用</h3>
+        </div>
+
+        <div class="panel-body">
+          <div class="side-card">
+            <h4>误差传播</h4>
+            <ul>
+              <li>传感器测量误差估计。</li>
+              <li>机械加工公差分析。</li>
+              <li>实验数据不确定度评估。</li>
+            </ul>
+          </div>
+
+          <div class="side-card">
+            <h4>线性化建模</h4>
+            <ul>
+              <li>控制系统小信号分析。</li>
+              <li>非线性模型局部近似。</li>
+              <li>优化算法中的梯度近似。</li>
+            </ul>
+          </div>
+
+          <div class="side-card">
+            <h4>快速估算</h4>
+            <ul>
+              <li>工程现场粗略计算。</li>
+              <li>数值算法初值估计。</li>
+              <li>复杂函数的局部替代。</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <script>
+    /**
+     * 微分互动可视化
+     */
+    (function(){
+    const canvas = document.getElementById("diffCanvas");
+    const ctx    = canvas.getContext("2d");
+
+    // 函数定义表
+    const FUNCS = {
+      x2:   { label: "f(x)=x²",    f: x => x*x,           fp: x => 2*x,            view:{xmin:-3,xmax:3,ymin:-1,ymax:9}  },
+      sinx: { label: "f(x)=sin x",  f: x => Math.sin(x),   fp: x => Math.cos(x),    view:{xmin:-4,xmax:4,ymin:-1.5,ymax:1.5} },
+      ex3:  { label: "f(x)=eˣ³",    f: x => Math.exp(x/3), fp: x => Math.exp(x/3)/3, view:{xmin:-4,xmax:4,ymin:-0.5,ymax:5} },
+      x3mx: { label: "f(x)=x³-x",   f: x => x*x*x - x,    fp: x => 3*x*x - 1,      view:{xmin:-2.5,xmax:2.5,ymin:-3,ymax:3} }
+    };
+
+    let currentKey = "x2";
+    let view = Object.assign({}, FUNCS[currentKey].view);
+
+    const x0Slider    = document.getElementById("x0Slider");
+    const dxSlider    = document.getElementById("dxSlider");
+    const x0Value     = document.getElementById("x0Value");
+    const dxValue     = document.getElementById("dxValue");
+    const slopeMetric = document.getElementById("slopeMetric");
+    const deltaYMetric= document.getElementById("deltaYMetric");
+    const dyMetric    = document.getElementById("dyMetric");
+    const errorMetric = document.getElementById("errorMetric");
+    const funcSelect  = document.getElementById("funcSelect");
+
+    // 坐标转换
+    function tx(x){ return (x - view.xmin)/(view.xmax - view.xmin) * canvas.width; }
+    function ty(y){ return canvas.height - (y - view.ymin)/(view.ymax - view.ymin) * canvas.height; }
+
+    function drawGrid(){
+      const W = canvas.width, H = canvas.height;
+      ctx.save();
+      // 背景
+      ctx.fillStyle = "#f5f8ff";
+      ctx.fillRect(0,0,W,H);
+      // 网格
+      ctx.strokeStyle = "#dbeafe";
+      ctx.lineWidth = 1;
+      const xStep = (view.xmax - view.xmin) <= 6 ? 1 : 1;
+      const yStep = (view.ymax - view.ymin) <= 6 ? 1 : 1;
+      for(let x = Math.ceil(view.xmin); x <= view.xmax; x += xStep){
+        ctx.beginPath(); ctx.moveTo(tx(x),0); ctx.lineTo(tx(x),H); ctx.stroke();
+      }
+      for(let y = Math.ceil(view.ymin); y <= view.ymax; y += yStep){
+        ctx.beginPath(); ctx.moveTo(0,ty(y)); ctx.lineTo(W,ty(y)); ctx.stroke();
+      }
+      // 轴
+      ctx.strokeStyle = "#94a3b8";
+      ctx.lineWidth = 1.5;
+      // x轴
+      ctx.beginPath(); ctx.moveTo(0,ty(0)); ctx.lineTo(W,ty(0)); ctx.stroke();
+      // y轴
+      ctx.beginPath(); ctx.moveTo(tx(0),0); ctx.lineTo(tx(0),H); ctx.stroke();
+      // 箭头
+      const ax = W-2, ay = ty(0);
+      ctx.fillStyle="#94a3b8";
+      ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(ax-8,ay-4); ctx.lineTo(ax-8,ay+4); ctx.fill();
+      const bx = tx(0), by = 6;
+      ctx.beginPath(); ctx.moveTo(bx,by); ctx.lineTo(bx-4,by+8); ctx.lineTo(bx+4,by+8); ctx.fill();
+      // 轴标签
+      ctx.fillStyle="#64748b";
+      ctx.font="13px Microsoft YaHei,Arial";
+      ctx.textAlign="center";
+      ctx.fillText("x", W-6, ty(0)+14);
+      ctx.fillText("y", tx(0)-10, 14);
+      // 刻度
+      ctx.font="11px Microsoft YaHei,Arial";
+      for(let x = Math.ceil(view.xmin); x <= view.xmax; x += xStep){
+        if(x===0) continue;
+        ctx.fillStyle="#64748b";
+        ctx.textAlign="center";
+        ctx.fillText(x, tx(x), ty(0)+14);
+      }
+      for(let y = Math.ceil(view.ymin); y <= view.ymax; y += yStep){
+        if(y===0) continue;
+        ctx.fillStyle="#64748b";
+        ctx.textAlign="right";
+        ctx.fillText(y, tx(0)-4, ty(y)+4);
+      }
+      ctx.restore();
+    }
+
+    function drawCurve(fn){
+      const W = canvas.width;
+      ctx.save();
+      ctx.strokeStyle="#2563eb";
+      ctx.lineWidth=3;
+      ctx.beginPath();
+      let first=true;
+      for(let px=0;px<=W;px++){
+        const x = view.xmin+(px/W)*(view.xmax-view.xmin);
+        const y = fn(x);
+        const cy = ty(y);
+        if(first){ ctx.moveTo(px,cy); first=false; } else { ctx.lineTo(px,cy); }
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawTangent(x0,y0,slope){
+      ctx.save();
+      ctx.strokeStyle="#22c55e";
+      ctx.lineWidth=2;
+      ctx.setLineDash([8,5]);
+      const x1=view.xmin, y1=y0+slope*(x1-x0);
+      const x2=view.xmax, y2=y0+slope*(x2-x0);
+      ctx.beginPath();
+      ctx.moveTo(tx(x1),ty(y1));
+      ctx.lineTo(tx(x2),ty(y2));
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function fillBar(xa,ya,xb,yb,color,alpha){
+      ctx.save();
+      ctx.globalAlpha=alpha;
+      ctx.fillStyle=color;
+      ctx.fillRect(tx(xa),ty(Math.max(ya,yb)), tx(xb)-tx(xa), Math.abs(ty(ya)-ty(yb)));
+      ctx.globalAlpha=1;
+      ctx.restore();
+    }
+
+    function drawVertLine(x,y0,y1,color,lw,dash=[]){
+      ctx.save();
+      ctx.strokeStyle=color; ctx.lineWidth=lw; ctx.setLineDash(dash);
+      ctx.beginPath(); ctx.moveTo(tx(x),ty(y0)); ctx.lineTo(tx(x),ty(y1)); ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawHorizLine(y,x0,x1,color,lw,dash=[]){
+      ctx.save();
+      ctx.strokeStyle=color; ctx.lineWidth=lw; ctx.setLineDash(dash);
+      ctx.beginPath(); ctx.moveTo(tx(x0),ty(y)); ctx.lineTo(tx(x1),ty(y)); ctx.stroke();
+      ctx.restore();
+    }
+
+    function dot(x,y,r,color){
+      ctx.save(); ctx.fillStyle=color;
+      ctx.beginPath(); ctx.arc(tx(x),ty(y),r,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+
+    function label(text,x,y,color,align="left",baseline="middle",bold=false){
+      ctx.save();
+      ctx.fillStyle=color;
+      ctx.font=(bold?"bold ":"")+"13px Microsoft YaHei,Arial";
+      ctx.textAlign=align;
+      ctx.textBaseline=baseline;
+      ctx.fillText(text,tx(x),ty(y));
+      ctx.restore();
+    }
+
+    function drawLegend(funcLabel){
+      ctx.save();
+      ctx.fillStyle="rgba(255,255,255,0.88)";
+      ctx.strokeStyle="#e2e8f0";
+      ctx.lineWidth=1;
+      ctx.beginPath();
+      ctx.roundRect(12,12,164,84,8);
+      ctx.fill(); ctx.stroke();
+      ctx.font="bold 14px Microsoft YaHei,Arial";
+      ctx.fillStyle="#1f2937";
+      ctx.textBaseline="middle";
+      ctx.fillText(funcLabel,22,28);
+      const items=[
+        ["#f97316","橙色：真实增量 Δy"],
+        ["#ef4444","红色：微分 dy"],
+        ["#8b5cf6","紫色：误差 Δy-dy"]
+      ];
+      items.forEach(([c,t],i)=>{
+        ctx.fillStyle=c;
+        ctx.font="12px Microsoft YaHei,Arial";
+        ctx.fillText(t,22,50+i*16);
+      });
+      ctx.restore();
+    }
+
+    function render(){
+      const fd   = FUNCS[currentKey];
+      const fn   = fd.f;
+      const fp   = fd.fp;
+      const x0   = Number(x0Slider.value);
+      const dx   = Number(dxSlider.value);
+      const x1   = x0+dx;
+      const y0   = fn(x0);
+      const y1   = fn(x1);
+      const slope= fp(x0);
+      const deltaY = y1-y0;
+      const dy_val = slope*dx;
+      const tangentY1 = y0+dy_val;
+      const error = deltaY - dy_val;
+
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      drawGrid();
+      drawTangent(x0,y0,slope);
+      drawCurve(fn);
+
+      // Δx 水平虚线 + 标注
+      drawHorizLine(y0, x0, x1, "#64748b", 1.5, [5,4]);
+      label("Δx",(x0+x1)/2, y0, "#475569","center","top");
+
+      // ---- 共用窗口单位 ----
+      const unitW = view.xmax - view.xmin;
+      const unitH = view.ymax - view.ymin;
+
+      // 左延伸起点：从 x1 左边伸到双箭头标注线的最右侧
+      const colW   = 0.045 * unitW;
+      const xRight = x1 + colW * 3.8;  // 覆盖到误差箭头线右侧
+
+      // ① y1 处水平虚线（橙色）：从 x0 左边 延伸到标注区右侧
+      drawHorizLine(y1,       x0 - 0.08*unitW, xRight, "#f97316", 1, [4,3]);
+      // ② tangentY1 处水平虚线（红色）
+      drawHorizLine(tangentY1, x0 - 0.08*unitW, xRight, "#ef4444", 1, [4,3]);
+
+      // ③ 在 x1 处画原始竖线：Δy（橙色）覆盖整段 y0→y1，dy（红色）覆盖 y0→tangentY1
+      fillBar(x1 - 0.015*unitW, y0, x1 + 0.015*unitW, y1,       "#f97316", 0.18);
+      drawVertLine(x1, y0, y1,       "#f97316", 2.5);
+      const offDy = 0.022 * unitW;
+      
+      
+
+      // 布局：双箭头标注线依次向右错开
+      const xDy    = x1 + colW * 1.8;
+      const xDyVal = x1 + colW * 2.7;
+      const xErr   = x1 + colW * 3.6;
+
+      // == 双端箭头线工具函数 ==
+      // 画一条带上下箭头的竖线，并在左側居中标注文字
+      function drawArrowLine(xPos, yA, yB, color, txt) {
+        if (Math.abs(ty(yA) - ty(yB)) < 3) return; // 太短则不画
+        const cxPx = tx(xPos);
+        const cyA  = ty(yA);
+        const cyB  = ty(yB);
+        const top  = Math.min(cyA, cyB);
+        const bot  = Math.max(cyA, cyB);
+        const ah   = Math.min(7, (bot - top) * 0.25); // 箭头高度
+
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.fillStyle   = color;
+        ctx.lineWidth   = 1.5;
+
+        // 主干线
+        ctx.beginPath();
+        ctx.moveTo(cxPx, top + ah);
+        ctx.lineTo(cxPx, bot - ah);
+        ctx.stroke();
+
+        // 上箭头
+        ctx.beginPath();
+        ctx.moveTo(cxPx, top);
+        ctx.lineTo(cxPx - 3.5, top + ah);
+        ctx.lineTo(cxPx + 3.5, top + ah);
+        ctx.closePath(); ctx.fill();
+
+        // 下箭头
+        ctx.beginPath();
+        ctx.moveTo(cxPx, bot);
+        ctx.lineTo(cxPx - 3.5, bot - ah);
+        ctx.lineTo(cxPx + 3.5, bot - ah);
+        ctx.closePath(); ctx.fill();
+
+        // 标注文字：在线段正中间右側
+        const midPx = (top + bot) / 2;
+        ctx.font = "bold 12px Microsoft YaHei,Arial";
+        ctx.textAlign    = "left";
+        ctx.textBaseline = "middle";
+        ctx.fillText(txt, cxPx + 5, midPx);
+        ctx.restore();
+      }
+
+      // Δy： y0 → y1 (曲线点）
+      drawArrowLine(xDy, y0, y1, "#f97316", "Δy");
+
+      // dy： y0 → tangentY1 (切线点）
+      drawArrowLine(xDyVal, y0, tangentY1, "#ef4444", "dy");
+
+      // 误差： tangentY1 → y1
+      if(Math.abs(error) > 0.005 * unitH){
+        drawArrowLine(xErr, tangentY1, y1, "#8b5cf6", "误差");
+      }
+
+      // 点
+      dot(x0, y0, 5, "#3b82f6");
+      dot(x1, y1, 7, "#f97316");
+      dot(x1, tangentY1, 5, "#ef4444");
+
+      // 点标注
+      label("P₀", x0-0.02*unitW, y0+0.02*unitH, "#3b82f6","right","middle");
+      label("Q",  x1-0.02*unitW, y1+0.04*unitH, "#f97316","left","middle");
+
+      drawLegend(fd.label);
+
+      // 更新显示
+      x0Value.textContent   = x0.toFixed(2);
+      dxValue.textContent   = dx.toFixed(2);
+      slopeMetric.textContent  = slope.toFixed(4);
+      deltaYMetric.textContent = deltaY.toFixed(4);
+      dyMetric.textContent     = dy_val.toFixed(4);
+      errorMetric.textContent  = error.toFixed(4);
+    }
+
+    funcSelect.addEventListener("change", () => {
+      currentKey = funcSelect.value;
+      view = Object.assign({}, FUNCS[currentKey].view);
+      render();
+    });
+    x0Slider.addEventListener("input", render);
+    dxSlider.addEventListener("input", render);
+    render();
+    }());
+
+    /**
+     * 左侧目录高亮
+     */
+    const tocLinks = Array.from(document.querySelectorAll(".toc-link"));
+    const sections = tocLinks
+      .map(link => {
+        const id = link.getAttribute("href");
+        return document.querySelector(id);
+      })
+      .filter(Boolean);
+
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = "#" + entry.target.id;
+
+            tocLinks.forEach(link => {
+              link.classList.toggle("active", link.getAttribute("href") === id);
+            });
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: "-25% 0px -65% 0px",
+        threshold: 0
+      }
+    );
+
+    sections.forEach(section => observer.observe(section));
+
+    tocLinks.forEach(link => {
+      link.addEventListener("click", () => {
+        tocLinks.forEach(item => item.classList.remove("active"));
+        link.classList.add("active");
+      });
+    });
+
+    /* ====== 知识路径图（Canvas 网络图） ====== */
+    ;(function() {
+
+    const kpCanvas = document.getElementById('kpathCanvas');
+    const kpCtx = kpCanvas.getContext('2d');
+    const kpTooltip = document.getElementById('kpathTooltip');
+    const menu = document.getElementById('nodeMenu');
+    const goEntryBtn = document.getElementById('goEntry');
+
+    // 节点数据
+    const kpNodes = [
+      { id: 0, label: '微分', type: 'core', r: 16,
+        desc: '核心知识点：研究函数增量的线性主部，是微积分的基石概念。',
+        color: '#a78bfa', glow: '#a78bfa' },
+      { id: 1, label: '极限的概念', type: 'upstream', r: 9,
+        desc: '前置知识：函数极限是微分定义的基础，微商即为差商的极限。',
+        color: '#60a5fa', glow: '#3b82f6' },
+      { id: 2, label: '函数的连续性', type: 'upstream', r: 8,
+        desc: '前置知识：可微必连续，连续是微分存在的必要条件。',
+        color: '#60a5fa', glow: '#3b82f6' },
+      { id: 3, label: '函数与映射', type: 'upstream', r: 7,
+        desc: '前置知识：理解自变量增量Δx与函数增量Δy的关系。',
+        color: '#60a5fa', glow: '#3b82f6' },
+      { id: 4, label: '无穷小量', type: 'upstream', r: 7,
+        desc: '前置知识：微分 dy = f\'(x)dx，其中dx为无穷小量。',
+        color: '#60a5fa', glow: '#3b82f6' },
+      { id: 5, label: '导数的概念', type: 'upstream', r: 10,
+        desc: '紧密关联：导数 f\'(x) 即为微分系数，dy = f\'(x)dx。',
+        color: '#38bdf8', glow: '#0ea5e9' },
+      { id: 6, label: '微分法则', type: 'downstream', r: 8,
+        desc: '直接下游：和差积商微分法则，复合函数微分法则（链式法则）。',
+        color: '#34d399', glow: '#10b981' },
+      { id: 7, label: '高阶微分', type: 'downstream', r: 7,
+        desc: '直接下游：二阶友n阶微分，d²y = f\'\'(x)dx²。',
+        color: '#34d399', glow: '#10b981' },
+      { id: 8, label: '微分中値定理', type: 'downstream', r: 9,
+        desc: '重要下游：拉格朗日中値定理，罗尔定理，柯西中値定理。',
+        color: '#34d399', glow: '#10b981' },
+      { id: 9, label: '洛必达法则', type: 'downstream', r: 8,
+        desc: '重要下游：利用微分处理 0/0, ∞/∞ 型未定式极限。',
+        color: '#34d399', glow: '#10b981' },
+      { id: 10, label: '泰勒公式', type: 'downstream', r: 8,
+        desc: '进阶下游：将函数展开为多项式，需要反复使用微分。',
+        color: '#34d399', glow: '#10b981' },
+      { id: 11, label: '不定积分', type: 'downstream', r: 8,
+        desc: '重要下游：不定积分是微分的逆运算，换元积分法基于微分。',
+        color: '#34d399', glow: '#10b981' },
+      { id: 12, label: '微分方程', type: 'downstream', r: 7,
+        desc: '应用下游：含有微分符号的方程，描述变量间微分关系。',
+        color: '#34d399', glow: '#10b981' },
+      { id: 13, label: '近似计算', type: 'related', r: 6,
+        desc: '应用：利用 Δy ≈ dy 进行近似计算，如 √(1+x)≈1+x/2。',
+        color: '#94a3b8', glow: '#64748b' },
+      { id: 14, label: '隐函数微分', type: 'related', r: 6,
+        desc: '扩展：对方程两边微分求隐函数导数（微分形式）。',
+        color: '#94a3b8', glow: '#64748b' },
+      { id: 15, label: '参数方程求导', type: 'related', r: 6,
+        desc: '扩展：利用微分形式 dy/dx = (dy/dt)/(dx/dt) 求导。',
+        color: '#94a3b8', glow: '#64748b' },
+      { id: 16, label: '多元函数偏微分', type: 'related', r: 7,
+        desc: '延伸：一元微分概念推广到多元，全微分 dz = ∂z/∂x·dx + ∂z/∂y·dy。',
+        color: '#f59e0b', glow: '#d97706' },
+    ];
+
+    const kpEdges = [
+      [1, 0, 'upstream'], [2, 0, 'upstream'], [3, 0, 'upstream'],
+      [4, 0, 'upstream'], [5, 0, 'upstream'],
+      [0, 6, 'downstream'], [0, 7, 'downstream'], [0, 8, 'downstream'],
+      [0, 9, 'downstream'], [0, 10, 'downstream'], [0, 11, 'downstream'],
+      [0, 12, 'downstream'],
+      [0, 13, 'related'], [0, 14, 'related'], [0, 15, 'related'], [0, 16, 'related'],
+      [1, 2, 'inner'], [1, 4, 'inner'], [3, 1, 'inner'],
+      [6, 7, 'inner'], [8, 9, 'inner'], [8, 10, 'inner'], [5, 8, 'inner'],
+      [6, 14, 'inner'], [6, 15, 'inner'], [11, 12, 'inner'],
+    ];
+
+    let kpW, kpH, kpPositions = null;
+    let kpDragging = null, kpDragOffX = 0, kpDragOffY = 0;
+    let kpHovered = -1;
+    let kpMenuNodeIdx = -1;
+    let kpAnimRunning = false;
+
+    // 初始布局偏移量（以 1000×520 画布为基准，乘以实际尺寸比例）
+    function kpInitPositions(W, H) {
+      const cx = W / 2, cy = H / 2;
+      // 缩放因子：让所有节点都在画布内显示
+      const sx = Math.min(W / 1000, 1) * 0.80;
+      const sy = Math.min(H / 520,  1) * 0.80;
+      const s  = Math.min(sx, sy);
+      const raw = [
+        [0,    0   ],  // 0 核心
+        [-240, -70 ],  // 1
+        [-210,  90 ],  // 2
+        [-310, -175],  // 3
+        [-155, -200],  // 4
+        [-85,  -175],  // 5
+        [ 155, -140],  // 6
+        [ 275, -50 ],  // 7
+        [ 175,  40 ],  // 8
+        [ 245,  155],  // 9
+        [  90,  200],  // 10
+        [ -50,  205],  // 11
+        [-190,  200],  // 12
+        [  55, -220],  // 13
+        [ 310,   90],  // 14
+        [ 295, -160],  // 15
+        [   0,  280],  // 16
+      ];
+      return raw.map(([dx, dy]) => ({ x: cx + dx * s, y: cy + dy * s }));
+    }
+
+    function kpGetScreenPos(i) {
+      return { x: kpPositions[i].x, y: kpPositions[i].y };
+    }
+
+    function kpResize() {
+      // canvas 是 absolute 定位，优先用父容器实际尺寸，干错 offsetWidth=0 的情况
+      const wrap = kpCanvas.parentElement;
+      const W = wrap ? wrap.clientWidth  || wrap.offsetWidth  : kpCanvas.offsetWidth;
+      const H = wrap ? wrap.clientHeight || wrap.offsetHeight : kpCanvas.offsetHeight;
+      kpW = kpCanvas.width  = W || 800;
+      kpH = kpCanvas.height = H || 420;
+      if (!kpPositions || kpPositions[0].x === 0) {
+        kpPositions = kpInitPositions(kpW, kpH);
+      }
+    }
+
+    function kpDrawEdge(a, b, type, alpha) {
+      const pa = kpGetScreenPos(a), pb = kpGetScreenPos(b);
+      kpCtx.save();
+      kpCtx.globalAlpha = alpha;
+      kpCtx.lineWidth = 1.2;
+      if (type === 'upstream') { kpCtx.strokeStyle = '#60a5fa'; kpCtx.setLineDash([]); }
+      else if (type === 'downstream') { kpCtx.strokeStyle = '#34d399'; kpCtx.setLineDash([]); }
+      else if (type === 'related') { kpCtx.strokeStyle = '#94a3b8'; kpCtx.setLineDash([4, 4]); }
+      else { kpCtx.strokeStyle = '#555'; kpCtx.setLineDash([3, 5]); kpCtx.lineWidth = 0.8; }
+      kpCtx.beginPath();
+      kpCtx.moveTo(pa.x, pa.y);
+      kpCtx.lineTo(pb.x, pb.y);
+      kpCtx.stroke();
+      kpCtx.setLineDash([]);
+      kpCtx.restore();
+    }
+
+    function kpDrawArrow(a, b, type) {
+      const pa = kpGetScreenPos(a), pb = kpGetScreenPos(b);
+      const nb = kpNodes[b];
+      const dx = pb.x - pa.x, dy = pb.y - pa.y;
+      const len = Math.sqrt(dx * dx + dy * dy);
+      if (len < 1) return;
+      const ux = dx / len, uy = dy / len;
+      const tx2 = pb.x - ux * (nb.r + 4), ty2 = pb.y - uy * (nb.r + 4);
+      kpCtx.save();
+      kpCtx.globalAlpha = 0.7;
+      kpCtx.fillStyle = type === 'upstream' ? '#60a5fa' : type === 'downstream' ? '#34d399' : '#888';
+      kpCtx.beginPath();
+      kpCtx.moveTo(tx2, ty2);
+      kpCtx.lineTo(tx2 - ux * 10 - uy * 5, ty2 - uy * 10 + ux * 5);
+      kpCtx.lineTo(tx2 - ux * 10 + uy * 5, ty2 - uy * 10 - ux * 5);
+      kpCtx.closePath();
+      kpCtx.fill();
+      kpCtx.restore();
+    }
+
+    function kpDrawNode(i, isHovered) {
+      const n = kpNodes[i];
+      const p = kpGetScreenPos(i);
+      kpCtx.save();
+      if (isHovered || n.type === 'core') {
+        const grad = kpCtx.createRadialGradient(p.x, p.y, n.r * 0.3, p.x, p.y, n.r * 2.2);
+        grad.addColorStop(0, n.glow + (isHovered ? 'aa' : '55'));
+        grad.addColorStop(1, 'transparent');
+        kpCtx.beginPath();
+        kpCtx.arc(p.x, p.y, n.r * 2.2, 0, Math.PI * 2);
+        kpCtx.fillStyle = grad; kpCtx.fill();
+      }
+      kpCtx.beginPath();
+      kpCtx.arc(p.x, p.y, n.r + 3, 0, Math.PI * 2);
+      kpCtx.strokeStyle = isHovered ? n.color : n.color + '66';
+      kpCtx.lineWidth = isHovered ? 2 : 1;
+      kpCtx.stroke();
+      const grad2 = kpCtx.createRadialGradient(p.x - n.r * 0.3, p.y - n.r * 0.3, 0, p.x, p.y, n.r);
+      grad2.addColorStop(0, n.color + 'cc');
+      grad2.addColorStop(1, n.color + '44');
+      kpCtx.beginPath();
+      kpCtx.arc(p.x, p.y, n.r, 0, Math.PI * 2);
+      kpCtx.fillStyle = grad2; kpCtx.fill();
+      const fontSize = n.type === 'core' ? 'bold 15px' : n.r > 15 ? '13px' : '12px';
+      kpCtx.font = `${fontSize} "PingFang SC","Microsoft YaHei",sans-serif`;
+      kpCtx.textAlign = 'center'; kpCtx.textBaseline = 'middle';
+      const labelX = p.x, labelY = p.y + n.r + 16;
+      kpCtx.fillStyle = 'rgba(0,0,0,0.6)';
+      kpCtx.fillText(n.label, labelX + 1, labelY + 1);
+      kpCtx.fillStyle = isHovered ? '#ffffff' : '#cccccc';
+      kpCtx.fillText(n.label, labelX, labelY);
+      kpCtx.restore();
+    }
+
+    function kpDraw() {
+      kpCtx.clearRect(0, 0, kpW, kpH);
+      const bg = kpCtx.createRadialGradient(kpW/2, kpH/2, 0, kpW/2, kpH/2, Math.max(kpW, kpH) * 0.7);
+      bg.addColorStop(0, '#222230'); bg.addColorStop(1, '#111118');
+      kpCtx.fillStyle = bg; kpCtx.fillRect(0, 0, kpW, kpH);
+      kpEdges.forEach(([a, b, type]) => {
+        const hi = kpHovered >= 0 && (a === kpHovered || b === kpHovered);
+        const alpha = kpHovered >= 0 ? (hi ? 0.9 : 0.15) : 0.45;
+        kpDrawEdge(a, b, type, alpha);
+        if (hi && (type === 'upstream' || type === 'downstream')) kpDrawArrow(a, b, type);
+      });
+      kpNodes.forEach((n, i) => { if (i !== kpHovered) kpDrawNode(i, false); });
+      if (kpHovered >= 0) kpDrawNode(kpHovered, true);
+      requestAnimationFrame(kpDraw);
+    }
+
+    function kpGetNodeAt(mx, my) {
+      for (let i = kpNodes.length - 1; i >= 0; i--) {
+        const p = kpGetScreenPos(i);
+        const dx = mx - p.x, dy = my - p.y;
+        if (dx*dx + dy*dy <= (kpNodes[i].r + 8) * (kpNodes[i].r + 8)) return i;
+      }
+      return -1;
+    }
+
+    // 菜单工具
+    function kpOpenMenu(nodeIdx, clientX, clientY) {
+      kpMenuNodeIdx = nodeIdx;
+      menu.style.display = 'block';
+      menu.style.left = clientX + 'px';
+      menu.style.top  = clientY + 'px';
+      const rect = menu.getBoundingClientRect();
+      let left = clientX, top = clientY;
+      if (rect.right  > window.innerWidth  - 8) left = clientX - rect.width;
+      if (rect.bottom > window.innerHeight - 8) top  = clientY - rect.height;
+      if (left < 8) left = 8;
+      if (top  < 8) top  = 8;
+      menu.style.left = left + 'px';
+      menu.style.top  = top  + 'px';
+    }
+    function kpCloseMenu() { menu.style.display = 'none'; }
+
+    // tooltip 内“进入词条”按钮 -- 已移除
+
+    goEntryBtn.addEventListener('click', () => {
+      if (kpMenuNodeIdx < 0) return;
+      const n = kpNodes[kpMenuNodeIdx];
+      location.href = 'detail.html?node=' + encodeURIComponent(n.label) + '&id=' + encodeURIComponent(n.id);
+      kpCloseMenu();
+    });
+
+    // 鼠标事件
+    let kpLastClick = -1, kpLastClickTime = 0;
+    kpCanvas.addEventListener('mousemove', e => {
+      const rect = kpCanvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+      if (kpDragging !== null) {
+        kpPositions[kpDragging].x = mx + kpDragOffX;
+        kpPositions[kpDragging].y = my + kpDragOffY;
+        return;
+      }
+      const ni = kpGetNodeAt(mx, my);
+      kpHovered = ni;
+      kpCanvas.style.cursor = ni >= 0 ? 'pointer' : 'default';
+      if (ni >= 0) {
+        const n = kpNodes[ni];
+        document.getElementById('kp-tt-name').textContent = n.label;
+        const typeMap = { core: '● 核心知识点', upstream: '▲ 前置依赖', downstream: '▼ 后续应用', related: '◆ 相关知识' };
+        const typeColorMap = { core: '#a78bfa', upstream: '#60a5fa', downstream: '#34d399', related: '#94a3b8' };
+        const ttType = document.getElementById('kp-tt-type');
+        ttType.textContent = typeMap[n.type] || '';
+        ttType.style.color = typeColorMap[n.type] || '#aaa';
+        document.getElementById('kp-tt-desc').textContent = n.desc;
+        let ttx = e.clientX + 16, tty = e.clientY - 10;
+        if (ttx + 240 > window.innerWidth)  ttx = e.clientX - 240;
+        if (tty + 120 > window.innerHeight) tty = e.clientY - 120;
+        kpTooltip.style.left = ttx + 'px';
+        kpTooltip.style.top  = tty + 'px';
+        kpTooltip.style.display = 'block';
+      } else {
+        kpTooltip.style.display = 'none';
+      }
+    });
+
+    kpCanvas.addEventListener('mousedown', e => {
+      const rect = kpCanvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+      const ni = kpGetNodeAt(mx, my);
+      if (ni >= 0) {
+        kpDragging = ni;
+        kpDragOffX = kpPositions[ni].x - mx;
+        kpDragOffY = kpPositions[ni].y - my;
+        kpCanvas.style.cursor = 'grabbing';
+      }
+    });
+
+    kpCanvas.addEventListener('mouseup', e => {
+      const rect = kpCanvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+      const ni = kpGetNodeAt(mx, my);
+      const now = Date.now();
+      const wasDrag = kpDragging !== null && (
+        Math.abs(kpPositions[kpDragging !== null ? kpDragging : 0].x - (mx + kpDragOffX)) > 5 ||
+        Math.abs(kpPositions[kpDragging !== null ? kpDragging : 0].y - (my + kpDragOffY)) > 5
+      );
+      if (!wasDrag && ni >= 0) {
+        kpOpenMenu(ni, e.clientX, e.clientY);
+      }
+      kpDragging = null;
+      kpCanvas.style.cursor = ni >= 0 ? 'pointer' : 'default';
+    });
+
+    kpCanvas.addEventListener('mouseleave', () => {
+      kpDragging = null; kpHovered = -1;
+      kpTooltip.style.display = 'none';
+    });
+
+    // 触摸支持
+    kpCanvas.addEventListener('touchstart', e => {
+      e.preventDefault();
+      const t = e.touches[0];
+      const rect = kpCanvas.getBoundingClientRect();
+      const mx = t.clientX - rect.left, my = t.clientY - rect.top;
+      const ni = kpGetNodeAt(mx, my);
+      if (ni >= 0) { kpDragging = ni; kpDragOffX = kpPositions[ni].x - mx; kpDragOffY = kpPositions[ni].y - my; }
+    }, { passive: false });
+
+    kpCanvas.addEventListener('touchmove', e => {
+      e.preventDefault();
+      if (kpDragging === null) return;
+      const t = e.touches[0];
+      const rect = kpCanvas.getBoundingClientRect();
+      kpPositions[kpDragging].x = t.clientX - rect.left + kpDragOffX;
+      kpPositions[kpDragging].y = t.clientY - rect.top  + kpDragOffY;
+    }, { passive: false });
+
+    kpCanvas.addEventListener('touchend', e => {
+      const t = e.changedTouches[0];
+      const rect = kpCanvas.getBoundingClientRect();
+      const mx = t.clientX - rect.left, my = t.clientY - rect.top;
+      const ni = kpGetNodeAt(mx, my);
+      if (ni >= 0 && kpDragging === ni) kpOpenMenu(ni, t.clientX, t.clientY);
+      kpDragging = null;
+    });
+
+    document.addEventListener('click', e => {
+      if (!menu.contains(e.target) && e.target !== kpCanvas) kpCloseMenu();
+    });
+
+    window.addEventListener('resize', () => {
+      const oldW = kpW, oldH = kpH;
+      kpResize();
+      if (oldW && oldH && kpPositions) {
+        kpPositions.forEach(p => { p.x = p.x / oldW * kpW; p.y = p.y / oldH * kpH; });
+      }
+      kpCloseMenu();
+    });
+
+    // 等待父容器尺寸就绪后再初始化，最多重试 30 次（~500ms）
+    let kpInitTries = 0;
+    function kpTryInit() {
+      const wrap = kpCanvas.parentElement;
+      const W = wrap ? wrap.clientWidth : 0;
+      const H = wrap ? wrap.clientHeight : 0;
+      if (W > 10 && H > 10) {
+        kpResize();
+        kpDraw(); // 尺寸就绪后启动动画循环
+      } else if (kpInitTries++ < 30) {
+        setTimeout(kpTryInit, 16);
+      } else {
+        // 超时兜底：强制使用默认尺寸
+        kpW = kpCanvas.width  = 800;
+        kpH = kpCanvas.height = 420;
+        kpPositions = kpInitPositions(kpW, kpH);
+        kpDraw();
+      }
+    }
+    kpTryInit();
+
+    /* ---- Expand / Collapse 全屏 ---- */
+    const kpWrap = document.getElementById('kpathWrap');
+    const kpExpandBtn = document.getElementById('kpExpandBtn');
+    let kpExpanded = false;
+    let kpSavedPositions = null;
+
+    kpExpandBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      kpExpanded = !kpExpanded;
+      if (kpExpanded) {
+        // 保存当前位置比例，展开后重新按新尺寸分配
+        kpSavedPositions = kpPositions.map(p => ({ x: p.x / kpW, y: p.y / kpH }));
+        kpWrap.classList.add('kpath-expanded');
+        // 更新按钮图标为收起
+        kpExpandBtn.innerHTML = `
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8">
+            <polyline points="8,6 13,1"/><polyline points="13,1 13,5"/><polyline points="13,1 9,1"/>
+            <polyline points="6,8 1,13"/><polyline points="1,13 1,9"/><polyline points="1,13 5,13"/>
+          </svg>
+          Collapse`;
+        setTimeout(() => {
+          const oldW = kpW, oldH = kpH;
+          kpW = kpCanvas.width  = kpWrap.offsetWidth;
+          kpH = kpCanvas.height = kpWrap.offsetHeight;
+          // 位置等比缩放
+          kpPositions = kpSavedPositions.map(p => ({ x: p.x * kpW, y: p.y * kpH }));
+        }, 20);
+      } else {
+        const ratios = kpPositions.map(p => ({ x: p.x / kpW, y: p.y / kpH }));
+        kpWrap.classList.remove('kpath-expanded');
+        kpExpandBtn.innerHTML = `
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8">
+            <polyline points="9,1 13,1 13,5"/>
+            <line x1="7.5" y1="6.5" x2="13" y2="1"/>
+            <polyline points="5,13 1,13 1,9"/>
+            <line x1="6.5" y1="7.5" x2="1" y2="13"/>
+          </svg>
+          Expand`;
+        setTimeout(() => {
+          const oldW = kpW, oldH = kpH;
+          kpW = kpCanvas.width  = kpWrap.offsetWidth;
+          kpH = kpCanvas.height = kpWrap.offsetHeight;
+          kpPositions = ratios.map(p => ({ x: p.x * kpW, y: p.y * kpH }));
+        }, 20);
+      }
+    });
+
+    // ESC 键收起
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && kpExpanded) kpExpandBtn.click();
+    });
+
+    })();
+  </script>
+
+</body>
+</html>
